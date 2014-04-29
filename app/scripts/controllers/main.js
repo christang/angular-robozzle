@@ -12,13 +12,6 @@ angular.module('robozzleApp')
         $scope.tileWidth = 16;
         $scope.tileHeightPad = 2;
         $scope.tileWidthPad = 2;
-
-        $scope.coordOfX = function (x) {
-          return x * $scope.tileWidth + ( 2 * x + 1 ) * $scope.tileWidthPad;
-        };
-        $scope.coordOfY = function (y) {
-          return y * $scope.tileHeight + ( 2 * y + 1 ) * $scope.tileHeightPad;
-        };
       }
 
       function initWorld() {

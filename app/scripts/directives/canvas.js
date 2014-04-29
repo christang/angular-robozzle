@@ -22,15 +22,27 @@ angular.module('robozzleApp')
 
   .directive('tile', function () {
     return {
-      template: '<text proxy>{{"A"}}</text>',
+      template: '<text proxy>•</text>',
       restrict: 'E',
       replace: true,
-      link: function linker(scope, $element, $attrs) {
+      controller: function _controller() {
+        this.coordOfX = function (x, width, pad) {
+          return x * width + ( 2 * x + 1 ) * pad;
+        };
+        this.coordOfY = function (y, height, pad) {
+          return y * height + ( 2 * y + 1 ) * pad;
+        };
+      },
+      link: function _linker(scope, $element, $attrs, tileCtrl) {
         $attrs.$observe('posX', function __setX(newX) {
-          $attrs.$set('x', scope.coordOfX(newX));
+          $attrs.$set('x', tileCtrl.coordOfX(newX,
+                                             scope.tileWidth,
+                                             scope.tileWidthPad));
         });
         $attrs.$observe('posY', function __setY(newY) {
-          $attrs.$set('y', scope.coordOfY(newY));
+          $attrs.$set('y', tileCtrl.coordOfY(newY,
+                                             scope.tileHeight,
+                                             scope.tileHeightPad));
         });
       }
     };

@@ -24,7 +24,7 @@ svgModule
 
               var newKeys = _.keys(newValues),
                   observables = _.filter(newKeys, function _isObservable(v) {
-                return v[0] !== '$' && v !== 'id' && v !== 'proxy';
+                return v[0] !== '$' && v !== 'id' && v !== 'proxy' ;
               });
 
               if (first) {

@@ -201,7 +201,7 @@ describe('Service: robozzle', function () {
 
         someWorld.advanceCursor();
         stars -= 1;
-        expect(someWorld.getCurrentTile().material).toEqual(Material.BLANK);        
+        expect(someWorld.getCurrentTile().material).toEqual(Material.BLANK);
       });
 
       expect(someWorld.isComplete()).toBe(true);
@@ -213,7 +213,7 @@ describe('Service: robozzle', function () {
   describe('Factory: Program', function () {
 
     // instantiate factory
-    var Program, theProgram;
+    var Program;
 
     beforeEach(inject(function (_Program_) {
       Program = _Program_;

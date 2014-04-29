@@ -146,6 +146,7 @@ angular.module('robozzleApp')
         return this.tape.pop();
       },
       push: function (opCodes) {
+        // todo: filter NOP
         this.tape = this.tape.concat(opCodes);
       }
     };
@@ -181,8 +182,8 @@ angular.module('robozzleApp')
       this.stars = 0;
 
       this.grid = _.map(_.range(maxY), function () {
-        return _.map(_.range(maxX), function () { 
-          return new Tile(); 
+        return _.map(_.range(maxX), function () {
+          return new Tile();
         });
       });
     }
@@ -299,7 +300,7 @@ angular.module('robozzleApp')
       setFuncStep: function (fn, pos, action, color) {
         assert(fn <= this.program.length);
 
-        var fun = this.program[fn - 1];
+        var fun = this.program[fn - 1],
             len = fun.length;
         
         assert(pos < len);
