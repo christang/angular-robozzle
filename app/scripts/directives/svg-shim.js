@@ -16,7 +16,8 @@ svgModule
             },
             function _update(newValues, oldValues) {
               function _addObserver(o) {
-                $attrs.$observe(o, function _onChange(attrVal) {
+                node.setAttribute(o, newValues[o]);
+                $attrs.$observe(o, function _update(attrVal) {
                   node.setAttribute(o, attrVal);
                 });
               }
@@ -47,14 +48,14 @@ svgModule
 // adds template contents by wrapping it in a div and taking
 // its contents. Is this good for svg contents?
 
-angular.forEach(['g', 'text'], function _map(svgElem) {
+angular.forEach(['g', 'text', 'rect'], function _map(svgElem) {
   
   svgModule
   
     .directive(svgElem, function _factory() {
       return {
         restrict: 'E',
-        require: 'proxy',
+        require: '^proxy',
         link: function _linker(scope, $element, $attrs, proxyCtrl) {
           var namespace = 'http://www.w3.org/2000/svg',
               node = document.createElementNS(namespace, svgElem);
