@@ -2,10 +2,10 @@
 
   <canvas ng-controller="MainCtrl">
     <grid transform="translate(20,2.5) rotate(10)" 
-          ng-repeat="x in range(2)">
+          ng-repeat="x in range(4)">
       <tile pos-x="{{x}}"
             pos-y="{{y}}" 
-            ng-repeat="y in range(2)" />
+            ng-repeat="y in range(4)" />
     </grid>
   </canvas>
 

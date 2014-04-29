@@ -8,33 +8,38 @@ svgModule
     return {
       restrict: 'A',
       controller: function _controller($scope, $element, $attrs) {
-        this.register = function _register(node) {
-          var first = true;
-          $scope.$watchCollection(
-            function _onChangeOf() {
-              return $attrs;
-            },
-            function _update(newValues, oldValues) {
-              function _addObserver(o) {
-                node.setAttribute(o, newValues[o]);
-                $attrs.$observe(o, function _update(attrVal) {
-                  node.setAttribute(o, attrVal);
+        this.register = function _register(node, node$attrs) {
+          // todo: 
+          // need to ensure attributes on element aren't clobbered by parent 
+
+          _.each([$attrs, node$attrs], function (attrs) {
+            var first = true;
+            $scope.$watchCollection(
+              function _onChangeOf() {
+                return attrs;
+              },
+              function _update(newValues, oldValues) {
+                function _addObserver(o) {
+                  node.setAttribute(o, newValues[o]);
+                  attrs.$observe(o, function _update(attrVal) {
+                    node.setAttribute(o, attrVal);
+                  });
+                }
+
+                var newKeys = _.keys(newValues),
+                    observables = _.filter(newKeys, function _isObservable(v) {
+                  return v[0] !== '$' && v !== 'id' && v !== 'proxy' ;
                 });
-              }
 
-              var newKeys = _.keys(newValues),
-                  observables = _.filter(newKeys, function _isObservable(v) {
-                return v[0] !== '$' && v !== 'id' && v !== 'proxy' ;
+                if (first) {
+                  _.each(observables, _addObserver);
+                  first = false;
+                } else {
+                  var oldKeys = _.keys(oldValues);
+                  _.each(_.difference(observables, oldKeys), _addObserver);
+                }
               });
-
-              if (first) {
-                _.each(observables, _addObserver);
-                first = false;
-              } else {
-                var oldKeys = _.keys(oldValues);
-                _.each(_.difference(observables, oldKeys), _addObserver);
-              }
-            });
+          });
         };
       }
     };
@@ -61,7 +66,7 @@ angular.forEach(['g', 'text', 'rect'], function _map(svgElem) {
               node = document.createElementNS(namespace, svgElem);
           angular.element(node).append($element[0].childNodes);
           $element.replaceWith(node);
-          proxyCtrl.register(node);
+          proxyCtrl.register(node, $attrs);
         }
       };
     });

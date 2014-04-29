@@ -22,7 +22,7 @@ angular.module('robozzleApp')
 
   .directive('tile', function () {
     return {
-      template: '<text proxy>•</text>',
+      template: '<g proxy><text>•</text><rect width="5" height="5" fill="pink"/></g>',
       restrict: 'E',
       replace: true,
       controller: function _controller() {
