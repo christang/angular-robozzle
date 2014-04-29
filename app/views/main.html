@@ -1,60 +1,11 @@
-<div class="header">
-  <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
-  </ul>
-  <h3 class="text-muted">robozzle</h3>
-</div>
-
 <div class="jumbotron">
-  <h1>Robozzle</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
 
-  <p>
-    <svg height="300px" 
-         width="300px">
-      <rect width="140" 
-            height="140"
-            x="5" y="5"
-            rx="15" ry="15"
-            style="fill:blue;stroke:pink;stroke-width:5;opacity:0.5"
-            ></rect>    
-      <rect width="140" 
-            height="140"
-            x="150" y="5"
-            rx="15" ry="15"
-            ></rect>    
-      <rect width="140" 
-            height="140"
-            x="5" y="150"
-            rx="15" ry="15"
-            ></rect>    
-      <rect width="140" 
-            height="140"
-            x="150" y="150"
-            rx="15" ry="15"
-            style="fill:red;stroke:black;stroke-width:5;opacity:0.5"
-            ></rect>    
-    </svg>
-  </p>
+  <canvas ng-controller="MainCtrl">
+    <grid transform="translate(20,2.5) rotate(10)" ng-repeat="x in range(5)">
+      <tile pos-x="{{x}}" pos-y="{{y}}" ng-repeat="y in range(5)" />
+    </grid>
+  </canvas>
 
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
+  <!--div ng-include="'views/partials/placeholder.html'"></div-->
 
-<div class="row marketing">
-  <h4></h4>
-  <p></p>
-</div>
-
-<div class="footer">
-  <p>
-    <span class="pull-right"> 
-    Written using AngularJS and D3JS by @digital_cee 
-    | <span class="glyphicon glyphicon-pencil text-info"></span> |
-    </span>
-  </p>
 </div>

@@ -77,3 +77,12 @@ body {
     border-bottom: 0;
   }
 }
+
+text {
+  fill: blue;
+}
+
+text:hover {
+  fill: white;
+  font-weight: bold;
+}
