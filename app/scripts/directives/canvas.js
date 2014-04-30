@@ -2,6 +2,12 @@
 
 angular.module('robozzleApp')
 
+  .directive('addShadows', function () {
+    return {
+      templateUrl: 'views/filters/dropshadow.svg'
+    };
+  })
+
   .directive('canvas', function () {
     return {
       template: '<svg ng-transclude />',
