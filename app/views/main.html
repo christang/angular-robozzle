@@ -1,12 +1,16 @@
 <div class="jumbotron">
 
   <canvas ng-controller="MainCtrl">
-    <grid transform="translate(20,2.5) rotate(10)" 
-          ng-repeat="x in range(4)">
+
+    <grid transform="translate(100,2.5) rotate(10)" 
+          ng-repeat="x in range(world.maxX)">
+
       <tile pos-x="{{x}}"
             pos-y="{{y}}" 
-            ng-repeat="y in range(4)" />
+            ng-repeat="y in range(world.maxY)" />
+
     </grid>
+
   </canvas>
 
   <!--div ng-include="'views/partials/placeholder.html'"></div-->

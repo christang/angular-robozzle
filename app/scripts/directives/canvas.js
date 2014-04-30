@@ -22,7 +22,15 @@ angular.module('robozzleApp')
 
   .directive('tile', function () {
     return {
-      template: '<g proxy><text>•</text><rect width="5" height="5" fill="pink"/></g>',
+      template: '<g proxy>'+
+                '<g transform="translate({{tileWidthPad}}, {{tileHeightPad}})">'+
+                '<rect class="{{classAt(x,y)}}" rx="4" ry="4" width="{{tileWidth}}" height="{{tileHeight}}" >'+
+                '</rect>'+
+                '</g>'+
+                '<text class="{{classAt(x,y)}}" dx="{{tileWidthPad+tileWidth/2}}" dy="{{tileHeightPad+tileHeight/2}}">'+
+                '{{iconAt(x,y)}}'+
+                '</text>'+
+                '</g>',
       restrict: 'E',
       replace: true,
       controller: function _controller() {

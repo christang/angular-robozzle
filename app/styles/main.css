@@ -79,10 +79,50 @@ body {
 }
 
 text {
-  fill: blue;
+  fill:blue;
+  text-anchor: middle;
+  alignment-baseline: central; 
+  font-family: 'Glyphicons Halflings';
+
+/*  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+*/
+
 }
 
 text:hover {
   fill: white;
   font-weight: bold;
+}
+
+rect.tile-clear {
+  fill: #DDDDDD;
+}
+
+rect.tile-red {
+  fill: #FF0066;
+}
+
+rect.tile-blue {
+  fill: #0099FF;
+}
+
+rect.tile-green {
+  fill: #66FF33;
+}
+
+rect.tile-void {
+  fill: #222222;
+}
+
+text.tile-cursor {
+  fill: #333399;
+}
+
+text.tile-star {
+  fill: #FFCC00;
 }
