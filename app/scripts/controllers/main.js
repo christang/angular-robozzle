@@ -83,12 +83,23 @@ angular.module('robozzleApp')
 
         var iconMap = {};
 
-        iconMap[Heading.UP]    = ['\ue113', ''];
-        iconMap[Heading.RIGHT] = ['\ue080', ''];
-        iconMap[Heading.DOWN]  = ['\ue114', ''];
-        iconMap[Heading.LEFT]  = ['\ue079', ''];
+        // Glyphicon mappings
 
-        var starTile = ['\ue104', ''];
+        // iconMap[Heading.UP]    = ['\ue113', ''];
+        // iconMap[Heading.RIGHT] = ['\ue080', ''];
+        // iconMap[Heading.DOWN]  = ['\ue114', ''];
+        // iconMap[Heading.LEFT]  = ['\ue079', ''];
+
+        // var starTile = ['\ue104', ''];
+
+        // FontAwesome mappings
+
+        iconMap[Heading.UP]    = ['\uf077', ''];
+        iconMap[Heading.RIGHT] = ['\uf054', ''];
+        iconMap[Heading.DOWN]  = ['\uf078', ''];
+        iconMap[Heading.LEFT]  = ['\uf053', ''];
+
+        var starTile = ['\uf08a', ''];
 
         $scope.iconAt = function (x, y) {
           var currentX = $scope.world.currentX,
