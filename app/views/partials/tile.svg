@@ -1,0 +1,18 @@
+<g>
+  <g ng-attr-transform="translate({{horizPad}}, {{verticalPad}})">
+    <rect rx="4" ry="4"
+          class="{{classes}}" 
+          ng-attr-x="{{x || 0}}" 
+          ng-attr-y="{{y || 0}}"
+          ng-attr-width="{{width}}" 
+          ng-attr-height="{{height}}">
+    </rect>
+  </g>
+  <text class="{{classes}}" 
+        ng-attr-x="{{x || 0}}" 
+        ng-attr-y="{{y || 0}}" 
+        ng-attr-dx="{{parseInt(horizPad)+width/2}}" 
+        ng-attr-dy="{{parseInt(verticalPad)+height/2}}">
+    {{icon}}
+  </text>
+</g>

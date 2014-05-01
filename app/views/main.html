@@ -1,14 +1,17 @@
-<div add-shadows />
-
 <div class="jumbotron">
 
   <canvas ng-controller="MainCtrl">
 
-    <grid transform="translate(100,2.5) rotate(10)" 
-          ng-repeat="x in range(world.maxX)">
+    <grid ng-repeat="x in range(world.maxX)">
 
       <tile pos-x="{{x}}"
-            pos-y="{{y}}" 
+            pos-y="{{y}}"
+            width="{{tileWidth}}"
+            height="{{tileHeight}}"
+            horiz-pad="{{tileWidthPad}}"
+            vertical-pad="{{tileHeightPad}}"
+            classes="{{classAt(x,y)}}" 
+            icon="{{iconAt(x,y)}}"
             ng-repeat="y in range(world.maxY)" />
 
     </grid>

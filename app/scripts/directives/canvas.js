@@ -10,7 +10,7 @@ angular.module('robozzleApp')
 
   .directive('canvas', function () {
     return {
-      template: '<svg ng-transclude />',
+      template: '<svg height="350" ng-transclude />',
       restrict: 'E',
       replace: true,
       transclude: true
@@ -19,7 +19,8 @@ angular.module('robozzleApp')
 
   .directive('grid', function () {
     return {
-      template: '<g proxy ng-transclude />',
+      type: 'svg',
+      template: '<g transform="translate(100,2.5) rotate(10)" ng-transclude />',
       restrict: 'E',
       replace: true,
       transclude: true
@@ -28,17 +29,20 @@ angular.module('robozzleApp')
 
   .directive('tile', function () {
     return {
-      template: '<g proxy>'+
-                '<g transform="translate({{tileWidthPad}}, {{tileHeightPad}})">'+
-                '<rect class="{{classAt(x,y)}}" rx="4" ry="4" width="{{tileWidth}}" height="{{tileHeight}}" >'+
-                '</rect>'+
-                '</g>'+
-                '<text class="{{classAt(x,y)}}" dx="{{tileWidthPad+tileWidth/2}}" dy="{{tileHeightPad+tileHeight/2}}">'+
-                '{{iconAt(x,y)}}'+
-                '</text>'+
-                '</g>',
+      type: 'svg',
+      templateUrl: 'views/partials/tile.svg',
       restrict: 'E',
       replace: true,
+      scope: {
+        x: '@',
+        y: '@',
+        width: '@',
+        height: '@',
+        horizPad: '@',
+        verticalPad: '@',
+        classes: '@',
+        icon: '@'
+      },
       controller: function _controller() {
         this.coordOfX = function (x, width, pad) {
           return x * width + ( 2 * x + 1 ) * pad;
@@ -49,14 +53,16 @@ angular.module('robozzleApp')
       },
       link: function _linker(scope, $element, $attrs, tileCtrl) {
         $attrs.$observe('posX', function __setX(newX) {
-          $attrs.$set('x', tileCtrl.coordOfX(newX,
-                                             scope.tileWidth,
-                                             scope.tileWidthPad));
+          if (newX) {
+            scope.x = tileCtrl.coordOfX(newX, scope.width,
+                                        scope.horizPad);
+          }
         });
         $attrs.$observe('posY', function __setY(newY) {
-          $attrs.$set('y', tileCtrl.coordOfY(newY,
-                                             scope.tileHeight,
-                                             scope.tileHeightPad));
+          if (newY) {
+            scope.y = tileCtrl.coordOfY(newY, scope.height,
+                                        scope.verticalPad);
+          }
         });
       }
     };

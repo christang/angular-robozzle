@@ -121,10 +121,8 @@ rect.tile-void {
 
 text.tile-cursor {
   fill: #333399;
-  filter: url(#dropshadow)
 }
 
 text.tile-star {
   fill: #FFCC00;
-  filter: url(#dropshadow)
 }
