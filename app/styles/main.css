@@ -79,23 +79,23 @@ body {
 }
 
 text {
-  fill:blue;
+  fill:white;
   text-anchor: middle;
   alignment-baseline: central; 
   font-family: 'FontAwesome';
 
-/*  -webkit-touch-callout: none;
+  -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-*/
 
 }
 
 text:hover {
-  fill: white;
+  fill: blue;
+  cursor: move;
   font-weight: bold;
 }
 
@@ -115,16 +115,15 @@ rect.tile-green {
   fill: #66FF33;
 }
 
+rect.tile-nop
 rect.tile-void {
   fill: #222222;
 }
 
 text.tile-cursor {
   fill: #333399;
-  filter: url(#dropshadow);
 }
 
 text.tile-star {
-  fill: #FFCC00;
-  filter: url(#dropshadow);
+  fill: #FF2222;
 }

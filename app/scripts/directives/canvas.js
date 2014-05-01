@@ -10,7 +10,17 @@ angular.module('robozzleApp')
 
   .directive('canvas', function () {
     return {
-      template: '<svg height="350" ng-transclude />',
+      template: '<svg height="600" ng-transclude />',
+      restrict: 'E',
+      replace: true,
+      transclude: true
+    };
+  })
+
+  .directive('sframe', function () {
+    return {
+      type: 'svg',
+      template: '<g ng-transclude />',
       restrict: 'E',
       replace: true,
       transclude: true
@@ -20,7 +30,7 @@ angular.module('robozzleApp')
   .directive('grid', function () {
     return {
       type: 'svg',
-      template: '<g transform="translate(100,2.5) rotate(10)" ng-transclude />',
+      template: '<g ng-transclude />',
       restrict: 'E',
       replace: true,
       transclude: true

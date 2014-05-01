@@ -4,19 +4,45 @@
 
   <canvas ng-controller="MainCtrl">
 
-    <grid ng-repeat="x in range(world.maxX)">
+    <sframe transform="translate(100,2.5)">
 
-      <tile pos-x="{{x}}"
-            pos-y="{{y}}"
-            width="{{tileWidth}}"
-            height="{{tileHeight}}"
-            horiz-pad="{{tileWidthPad}}"
-            vertical-pad="{{tileHeightPad}}"
-            classes="{{classAt(x,y)}}" 
-            icon="{{iconAt(x,y)}}"
-            ng-repeat="y in range(world.maxY)" />
+      <desc>Frame containing the World</desc>
 
-    </grid>
+      <grid ng-repeat="y in range(world.maxY)">
+
+        <tile pos-x="{{x}}"
+              pos-y="{{y}}"
+              width="{{view.world.tile.width}}"
+              height="{{view.world.tile.height}}"
+              horiz-pad="{{view.world.tile.horizPad}}"
+              vertical-pad="{{view.world.tile.verticalPad}}"
+              classes="{{world.classAt(x,y)}}" 
+              icon="{{world.iconAt(x,y)}}"
+              
+              ng-repeat="x in range(world.maxX)" />
+
+      </grid>
+
+    </sframe>
+
+    <sframe transform="translate(175,325)">
+
+      <desc>Frame containing the Program</desc>
+
+      <grid ng-repeat="fn in range(program.functions.length)">
+
+        <tile pos-y="{{fn}}"
+              pos-x="{{pos}}"
+              width="{{view.program.tile.width}}"
+              height="{{view.program.tile.height}}"
+              horiz-pad="{{view.program.tile.horizPad}}"
+              vertical-pad="{{view.program.tile.verticalPad}}"
+              classes="{{program.classAt(fn,pos)}}" 
+              icon="{{program.iconAt(fn,pos)}}"
+              
+              ng-repeat="pos in range(program.functions[fn].length)" />
+
+    </sframe>
 
   </canvas>
 

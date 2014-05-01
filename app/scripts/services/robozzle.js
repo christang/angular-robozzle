@@ -275,8 +275,8 @@ angular.module('robozzleApp')
 
   }])
 
-  .factory('Program', ['Op', 'Stack', 'Step', 'assert', function __classFactory(
-    Op, Stack, Step, assert) {
+  .factory('Program', ['Color', 'Op', 'Stack', 'Step', 'assert', function __classFactory(
+    Color, Op, Stack, Step, assert) {
 
     var maxFuncs = 5,
         maxStepsPerFunc = 10;
@@ -284,9 +284,9 @@ angular.module('robozzleApp')
     function Program(funcSteps) {
       assert(funcSteps.length <= maxFuncs);
 
-      this.program = _.map(funcSteps, function __initProgram(steps) {
+      this.functions = _.map(funcSteps, function __initProgram(steps) {
         assert(steps <= maxStepsPerFunc);
-        return arrayOf(steps, Step.encode(Step.NOP, Step.CLEAR));
+        return arrayOf(steps, Step.encode(Op.NOP, Color.CLEAR));
       });
 
       this.success = false;
@@ -297,10 +297,23 @@ angular.module('robozzleApp')
     }
 
     Program.prototype = {
-      setFuncStep: function (fn, pos, action, color) {
-        assert(fn <= this.program.length);
+      stepAt: function (fn, pos) {
+        assert(fn <= maxFuncs);
 
-        var fun = this.program[fn - 1],
+        var fun = this.functions[fn - 1],
+            len = fun.length;
+
+        assert(pos < len);
+
+        var opCode = fun[len-pos-1],
+            step = Step.decode(opCode);
+
+        return step;
+      },
+      setFuncStep: function (fn, pos, action, color) {
+        assert(fn <= this.functions.length);
+
+        var fun = this.functions[fn - 1],
             len = fun.length;
         
         assert(pos < len);
@@ -309,7 +322,7 @@ angular.module('robozzleApp')
       },
       run: function (world) {
         var stack = new Stack();
-        stack.push(this.program[0]);
+        stack.push(this.functions[0]);
 
         while(stack.any() && world.safe && !world.isComplete()) {
           var opCode = stack.pop(),
@@ -322,23 +335,23 @@ angular.module('robozzleApp')
               break;
             
             case Op.F1:
-              if (currentTile.color === step.color) { stack.push(this.program[0]); }
+              if (currentTile.color === step.color) { stack.push(this.functions[0]); }
               break;
 
             case Op.F2:
-              if (currentTile.color === step.color) { stack.push(this.program[1]); }
+              if (currentTile.color === step.color) { stack.push(this.functions[1]); }
               break;
 
             case Op.F3:
-              if (currentTile.color === step.color) { stack.push(this.program[2]); }
+              if (currentTile.color === step.color) { stack.push(this.functions[2]); }
               break;
 
             case Op.F4:
-              if (currentTile.color === step.color) { stack.push(this.program[3]); }
+              if (currentTile.color === step.color) { stack.push(this.functions[3]); }
               break;
 
             case Op.F5:
-              if (currentTile.color === step.color) { stack.push(this.program[4]); }
+              if (currentTile.color === step.color) { stack.push(this.functions[4]); }
               break;
 
             case Op.FWD:

@@ -8,19 +8,33 @@ angular.module('robozzleApp')
       $scope.range = _.range;
 
       function init() {
-        $scope.tileHeight = 36;
-        $scope.tileWidth = 36;
-        $scope.tileHeightPad = 1;
-        $scope.tileWidthPad = 1;
+        $scope.view = {
+          world: {
+            tile: {
+              height: 36,
+              width: 36,
+              horizPad: 1,
+              verticalPad: 1
+            }
+          },
+          program: {
+            tile: {
+              height: 24,
+              width: 24,
+              horizPad: 1,
+              verticalPad: 1
+            }
+          }
+        };
       }
 
       function initWorld() {
         var maxX = 9,
-          maxY = 7,
-          currentHeading = Heading.UP,
-          currentX = 4,
-          currentY = 3,
-          world = new World(maxX, maxY, currentHeading, currentX, currentY);
+            maxY = 7,
+            currentHeading = Heading.UP,
+            currentX = 4,
+            currentY = 3,
+            world = new World(maxX, maxY, currentHeading, currentX, currentY);
 
         _.each(_.range(2), function (dy) {
           _.each(_.range(2), function (dx) {
@@ -35,7 +49,7 @@ angular.module('robozzleApp')
 
       function initProgram() {
         var funcSteps = [10, 10, 10, 10, 10],
-          program = new Program(funcSteps);
+            program = new Program(funcSteps);
 
         program.setFuncStep(1, 0, Op.FWD, Color.CLEAR);
         program.setFuncStep(1, 1, Op.R90, Color.CLEAR);
@@ -44,19 +58,19 @@ angular.module('robozzleApp')
         $scope.program = program;
       }
 
-      function initHelpers() {
-        var classMap = {};
+      var classMap = {};
 
-        classMap[Color.CLEAR] = ['tile-clear', ''];
-        classMap[Color.RED]   = ['tile-red', ''];
-        classMap[Color.BLUE]  = ['tile-blue', ''];
-        classMap[Color.GREEN] = ['tile-green', ''];
+      classMap[Color.CLEAR] = ['tile-clear', ''];
+      classMap[Color.RED]   = ['tile-red', ''];
+      classMap[Color.BLUE]  = ['tile-blue', ''];
+      classMap[Color.GREEN] = ['tile-green', ''];
 
+      function initWorldHelpers() {
         var classVoid   = ['tile-void', ''],
             classStar   = ['tile-star', ''],
             classCursor = ['tile-cursor', ''];
 
-        $scope.classAt = function (x, y) {
+        $scope.world.classAt = function (x, y) {
           var tile = $scope.world.grid[y][x],
               color = tile.color,
               isVoid = (tile.material === Material.VOID),
@@ -101,7 +115,7 @@ angular.module('robozzleApp')
 
         var starTile = ['\uf08a', ''];
 
-        $scope.iconAt = function (x, y) {
+        $scope.world.iconAt = function (x, y) {
           var currentX = $scope.world.currentX,
               currentY = $scope.world.currentY,
               currentHeading = $scope.world.currentHeading,
@@ -118,10 +132,45 @@ angular.module('robozzleApp')
         };
       }
 
+      function initProgramHelpers() {
+        var classNOP = ['tile-nop', ''];
+
+        $scope.program.classAt = function (x, y) {
+          var step = $scope.program.stepAt(x + 1, y),
+              color = step.color,
+              op = step.op,
+              isNOP = (step.op === Op.NOP),
+              classes = [];
+
+          classes.push(isNOP ? classNOP[0] : classMap[color][0]);
+          return classes.join(' ');
+        };
+
+        var iconMap = {};
+
+        iconMap[Op.NOP] = [' ', ''];
+        iconMap[Op.F1]  = ['1', ''];
+        iconMap[Op.F2]  = ['2', ''];
+        iconMap[Op.F3]  = ['3', ''];
+        iconMap[Op.F4]  = ['4', ''];
+        iconMap[Op.F5]  = ['5', ''];
+        iconMap[Op.FWD] = ['\uf062', ''];
+        iconMap[Op.L90] = ['\uf0e2', ''];
+        iconMap[Op.R90] = ['\uf01e', ''];
+
+        $scope.program.iconAt = function (x, y) {
+          var step = $scope.program.stepAt(x + 1, y),
+              op = step.op;
+
+          return iconMap[op][0];
+        };
+      }
+
       init();
       initWorld();
+      initWorldHelpers();
       initProgram();
-      initHelpers();
+      initProgramHelpers();
 
     }
   ]);
