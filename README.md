@@ -1,4 +1,4 @@
 angular-robozzle
 ================
 
-AngularJS (1.2.15) / D3 implementation of a favorite puzzler site
+AngularJS (1.3.0-snapshot) / SVG implementation of a favorite puzzler site
