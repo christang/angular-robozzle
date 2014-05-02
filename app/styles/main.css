@@ -120,7 +120,12 @@ rect.tile-void {
   fill: #222222;
 }
 
-text.tile-cursor {
+rect.tile-cursor {
+  stroke: blue;
+  stroke-width: 3;
+}
+
+text.tile-ship {
   fill: #333399;
 }
 

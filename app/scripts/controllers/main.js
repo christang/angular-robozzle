@@ -2,8 +2,8 @@
 
 angular.module('robozzleMain', ['robozzleObjects'])
   .controller('MainCtrl', [
-    '$scope', 'World', 'Heading', 'Material', 'Color', 'Program', 'Op',
-    function ($scope, World, Heading, Material, Color, Program, Op) {
+    '$scope', 'Stepper', 'World', 'Heading', 'Material', 'Color', 'Program', 'Op',
+    function ($scope, Stepper, World, Heading, Material, Color, Program, Op) {
     
       $scope.range = _.range;
 
@@ -66,9 +66,9 @@ angular.module('robozzleMain', ['robozzleObjects'])
       classMap[Color.GREEN] = ['tile-green', ''];
 
       function initWorldHelpers() {
-        var classVoid   = ['tile-void', ''],
-            classStar   = ['tile-star', ''],
-            classCursor = ['tile-cursor', ''];
+        var classVoid = ['tile-void', ''],
+            classStar = ['tile-star', ''],
+            classShip = ['tile-ship', ''];
 
         $scope.world.classAt = function (x, y) {
           var tile = $scope.world.grid[y][x],
@@ -83,7 +83,7 @@ angular.module('robozzleMain', ['robozzleObjects'])
               isCurrent = (currentX === x && currentY === y);
 
           if (isCurrent) {
-            classes.push(classCursor[0]);
+            classes.push(classShip[0]);
           }
 
           var isStar = (tile.material === Material.STAR);
@@ -133,15 +133,23 @@ angular.module('robozzleMain', ['robozzleObjects'])
       }
 
       function initProgramHelpers() {
-        var classNOP = ['tile-nop', ''];
+        var classNOP    = ['tile-nop', ''],
+            classCursor = ['tile-cursor', ''];
 
-        $scope.program.classAt = function (x, y) {
-          var step = $scope.program.stepAt(x + 1, y),
+        $scope.program.classAt = function (fn, pos) {
+          var step = $scope.program.stepAt(fn + 1, pos),
               color = step.color,
               isNOP = (step.op === Op.NOP),
               classes = [];
 
           classes.push(isNOP ? classNOP[0] : classMap[color][0]);
+
+          var isCurrent = (fn + 1 === $scope.currentFn && pos === $scope.currentPos);
+
+          if (isCurrent) {
+            classes.push(classCursor[0]);
+          }
+
           return classes.join(' ');
         };
 
@@ -165,11 +173,29 @@ angular.module('robozzleMain', ['robozzleObjects'])
         };
       }
 
+      function initStepper() {
+
+        function callback(fn, pos, status) {
+          $scope.currentFn = fn;
+          $scope.currentPos = pos;
+          console.log(status, fn, pos);
+        }
+
+        $scope.stepper = new Stepper($scope.world,
+                                     $scope.program);
+
+        $scope.onSafeStep =
+        $scope.onBadStep =
+        $scope.onComplete = callback;
+
+      }
+
       init();
       initWorld();
       initWorldHelpers();
       initProgram();
       initProgramHelpers();
+      initStepper();
 
     }
   ]);

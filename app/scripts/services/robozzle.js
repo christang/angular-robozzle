@@ -128,6 +128,10 @@ angular.module('robozzleObjects', [])
       return decoder(encoded);
     };
 
+    Step.isNoOp = function (encoded) {
+      return encoded % 10 === 0;
+    };
+
     return Step;
 
   }])
@@ -148,6 +152,8 @@ angular.module('robozzleObjects', [])
       push: function (opCodes) {
         // todo: filter NOP
         this.tape = this.tape.concat(opCodes);
+
+        return this;
       }
     };
 
@@ -197,6 +203,7 @@ angular.module('robozzleObjects', [])
           if (material === Material.STAR) { this.stars += 1; }
           if (oldMaterial === Material.STAR) { this.stars -= 1; }
         }
+        return this;
       },
       getCurrentTile: function () {
         if (this.currentY >= 0 && this.currentY < this.maxY && this.currentX >= 0 && this.currentX < this.maxX) {
@@ -208,7 +215,7 @@ angular.module('robozzleObjects', [])
       advanceCursor: function () {
 
         // don't move unless safe
-        if (!this.safe) { return; }
+        if (!this.safe) { return this; }
 
         switch (this.currentHeading) {
 
@@ -252,18 +259,21 @@ angular.module('robozzleObjects', [])
 
         }
 
+        return this;
       },
       rotateCursorLeft: function () {
         // don't move unless safe
-        if (!this.safe) { return; }
-
-        this.currentHeading = ( this.currentHeading + 3 ) % 4;
+        if (this.safe) {
+          this.currentHeading = ( this.currentHeading + 3 ) % 4;
+        }
+        return this;
       },
       rotateCursorRight: function () {
         // don't move unless safe
-        if (!this.safe) { return; }
-
-        this.currentHeading = ( this.currentHeading + 1 ) % 4;
+        if (this.safe) {
+          this.currentHeading = ( this.currentHeading + 1 ) % 4;
+        }
+        return this;
       },
       isComplete: function () {
 
@@ -319,63 +329,124 @@ angular.module('robozzleObjects', [])
         assert(pos < len);
 
         fun[len-pos-1] = Step.encode(action, color);
-      },
-      run: function (world) {
-        var stack = new Stack();
-        stack.push(this.functions[0]);
-
-        while(stack.any() && world.safe && !world.isComplete()) {
-          var opCode = stack.pop(),
-              step = Step.decode(opCode),
-              currentTile = world.getCurrentTile();
-
-          switch (step.op) {
-
-            case Op.NOP:
-              break;
-            
-            case Op.F1:
-              if (currentTile.color === step.color) { stack.push(this.functions[0]); }
-              break;
-
-            case Op.F2:
-              if (currentTile.color === step.color) { stack.push(this.functions[1]); }
-              break;
-
-            case Op.F3:
-              if (currentTile.color === step.color) { stack.push(this.functions[2]); }
-              break;
-
-            case Op.F4:
-              if (currentTile.color === step.color) { stack.push(this.functions[3]); }
-              break;
-
-            case Op.F5:
-              if (currentTile.color === step.color) { stack.push(this.functions[4]); }
-              break;
-
-            case Op.FWD:
-              if (currentTile.color === step.color) { world.advanceCursor(); }
-              break;
-
-            case Op.L90:
-              if (currentTile.color === step.color) { world.rotateCursorLeft(); }
-              break;
-
-            case Op.R90:
-              if (currentTile.color === step.color) { world.rotateCursorRight(); }
-              break;
-
-          }
-
-          if (world.safe && world.isComplete()) {
-            this.success = true;
-          }
-
-        }
+        
+        return this;
       }
     };
 
     return Program;
 
-  }]);
+  }])
+
+  .factory('Stepper', ['Color', 'Op', 'Step', 'Stack', function __classFactory(Color, Op, Step, Stack) {
+
+    function noop() {}
+
+    function pushFunction(fn, program, stack) {
+      var fun = program.functions[fn-1],
+          len = fun.length,
+          data = _.map(fun, function (f, i) {
+            return [f, fn, len-i-1];
+          });
+      data = _.filter(data, function (o) {
+        return !Step.isNoOp(o[0]);
+      });
+
+      stack.push(data);
+    }
+
+    function stepAllowed(tile, step) {
+      return step.color === Color.CLEAR || tile.color === step.color;
+    }
+
+    function takeStep(world, program, stack, onSafeStep, onBadStep, onComplete) {
+
+      var popped = stack.pop(),
+          opCode = popped[0],
+          step = Step.decode(opCode),
+          currentTile = world.getCurrentTile();
+
+      switch (step.op) {
+
+        case Op.NOP:
+          break;
+        
+        case Op.F1:
+          if (stepAllowed(currentTile, step)) { pushFunction(1, program, stack); }
+          break;
+
+        case Op.F2:
+          if (stepAllowed(currentTile, step)) { pushFunction(2, program, stack); }
+          break;
+
+        case Op.F3:
+          if (stepAllowed(currentTile, step)) { pushFunction(3, program, stack); }
+          break;
+
+        case Op.F4:
+          if (stepAllowed(currentTile, step)) { pushFunction(4, program, stack); }
+          break;
+
+        case Op.F5:
+          if (stepAllowed(currentTile, step)) { pushFunction(5, program, stack); }
+          break;
+
+        case Op.FWD:
+          if (stepAllowed(currentTile, step)) { world.advanceCursor(); }
+          break;
+
+        case Op.L90:
+          if (stepAllowed(currentTile, step)) { world.rotateCursorLeft(); }
+          break;
+
+        case Op.R90:
+          if (stepAllowed(currentTile, step)) { world.rotateCursorRight(); }
+          break;
+
+      }
+
+      var fn = popped[1],
+          pos = popped[2];
+
+      if (world.safe) {
+        if (world.isComplete()) {
+          program.success = true;
+          onComplete(fn, pos, 'complete!');
+        } else {
+          onSafeStep(fn, pos, 'safe');
+        }
+      } else {
+        onBadStep(fn, pos, 'bad');
+      }
+
+    }
+
+    function Stepper(world, program) {
+      var stack = new Stack();
+      pushFunction(1, program, stack);
+
+      this.step = function (n, onSafeStep, onBadStep, onComplete) {
+        n = n || 1;
+        onComplete = onComplete || noop;
+        onSafeStep = onSafeStep || noop;
+        onBadStep = onBadStep || noop;
+
+        while (n > 0) {
+          if (stack.any() && world.safe && !world.isComplete()) {
+            takeStep(world, program, stack, onSafeStep, onBadStep, onComplete);
+          } else {
+            return false;
+          }
+
+          n -= 1;
+        }
+
+        return true;
+      };
+    }
+
+    return Stepper;
+
+  }])
+
+  ;

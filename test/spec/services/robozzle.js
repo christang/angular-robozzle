@@ -240,4 +240,107 @@ describe('Service: robozzle', function () {
 
   });
 
+  describe('Factory: Stepper', function() {
+
+    // instantiate factory
+    var Stepper, someStepper, someProgram, someWorld;
+
+    function makeWorld (World) {
+      var maxX = 4,
+          maxY = 3,
+          currentHeading = Heading.RIGHT,
+          currentX = 0,
+          currentY = 1,
+          world = new World(maxX, maxY, currentHeading, currentX, currentY)
+            .setTile(0, 1, Material.TILE, Color.GREEN)
+            .setTile(1, 1, Material.TILE, Color.BLUE)
+            .setTile(2, 1, Material.TILE, Color.RED)
+            .setTile(3, 1, Material.STAR, Color.CLEAR);
+      return world;
+    }
+
+    function makeProgram (Program, Op, Color) {
+      var program = new Program([3,3,3,3,3])
+            .setFuncStep(1, 0, Op.F2, Color.CLEAR)
+            .setFuncStep(2, 1, Op.F3, Color.CLEAR) // should filter out noop @pos=0
+            .setFuncStep(3, 2, Op.F4, Color.CLEAR) // should filter out noop @pos=0,1
+            .setFuncStep(4, 0, Op.F5, Color.CLEAR)
+            .setFuncStep(5, 0, Op.FWD, Color.CLEAR)
+            .setFuncStep(5, 1, Op.F5, Color.CLEAR);
+      return program;
+    }
+
+    beforeEach(inject(function(_Stepper_, _World_, _Program_, _Op_, _Color_) {
+      Stepper = _Stepper_;
+      someWorld = makeWorld(_World_);
+      someProgram = makeProgram(_Program_, _Op_, _Color_);
+      someStepper = new Stepper(someWorld, someProgram);
+    }));
+
+    it('should step through the world for a simple program', function() {
+      var spyOnSafeStep = jasmine.createSpy('onSafeStep'),
+          spyOnBadStep  = jasmine.createSpy('onBadStep'),
+          spyOnComplete = jasmine.createSpy('onComplete'),
+          tookStep;
+
+      // first 5 steps
+
+      tookStep = someStepper.step(4, spyOnSafeStep, spyOnBadStep, spyOnComplete);
+
+      // steps expected:
+
+      // F2 -> F3 -> F4 -> F5 
+      // ^safe       ^safe   
+      //       ^safe       ^safe
+
+      expect(spyOnSafeStep).toHaveBeenCalled();
+      expect(spyOnSafeStep.callCount).toEqual(4);     // four initially ...
+
+      expect(spyOnComplete).not.toHaveBeenCalled();
+      expect(spyOnBadStep).not.toHaveBeenCalled();
+      expect(tookStep).toBe(true);
+
+      expect(someWorld.isComplete()).toBe(false);
+
+      // more steps
+
+      tookStep = someStepper.step(5, spyOnSafeStep, spyOnBadStep, spyOnComplete);
+
+      // steps expected: 
+      // -> FWD -> F5 -> FWD -> F5 -> FWD (complete)
+      //    @(1,1)       @(2,1)       @(3,1,*)
+      //    ^safe        ^safe        ^complete
+      //           ^safe        ^safe
+
+      expect(spyOnSafeStep).toHaveBeenCalled();
+      expect(spyOnSafeStep.callCount).toEqual(4 + 4);  // and four more
+
+      expect(spyOnComplete).toHaveBeenCalled();
+      expect(spyOnComplete.callCount).toEqual(1);
+
+      expect(spyOnBadStep).not.toHaveBeenCalled();
+      expect(tookStep).toBe(true);
+
+      expect(someWorld.isComplete()).toBe(true);
+
+      // add another star, and move twice more...
+      // -> F5 -> FWD -> stop
+      //          @(4,1) = out of bounds
+      //    ^safe
+      //          ^bad!
+
+      someWorld.setTile(3, 2, Material.STAR, Color.CLEAR);
+      expect(someWorld.isComplete()).toBe(false);
+
+      tookStep = someStepper.step(3, spyOnSafeStep, spyOnBadStep, spyOnComplete);
+
+      expect(spyOnBadStep).toHaveBeenCalled();
+      expect(spyOnBadStep.callCount).toEqual(1);
+
+      expect(tookStep).toBe(false);
+
+    });
+
+  });
+
 });
