@@ -196,7 +196,7 @@ module.exports = function (grunt) {
     // The following *-min tasks produce minified files in the dist folder
     cssmin: {
       options: {
-        root: '<%= yeoman.app %>'
+        //root: '<%= yeoman.app %>'
       }
     },
 
@@ -272,7 +272,7 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
-            'views/{,*/}*.html',
+            'views/{,*/}*.{svg,html}',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
