@@ -4,7 +4,7 @@
 // use either the Factory() of the Value() method. I prefer
 // the Factory since it allows for dependency injection.
 
-angular.module('robozzleApp')
+angular.module('robozzleObjects', [])
   .factory('Person', [function __classFactory() {
 
 

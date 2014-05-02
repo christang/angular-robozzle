@@ -3,7 +3,7 @@
 describe('Directive: canvas', function () {
 
   // load the directive's module
-  beforeEach(module('robozzleApp'));
+  beforeEach(module('robozzleCanvas'));
 
   var element,
     scope;

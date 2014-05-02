@@ -24,6 +24,12 @@ module.exports = function(config) {
       'test/spec/**/*.js'
     ],
 
+    reporters: ['progress', 'coverage'],
+
+    preprocessors: {
+      'app/scripts/**/*.js': 'coverage'
+    },
+
     // list of files / patterns to exclude
     exclude: [],
 

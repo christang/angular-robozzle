@@ -5,7 +5,10 @@ angular
     'ngCookies',
     'ngResource',
     'ngSanitize',
-    'ngRoute'
+    'ngRoute',
+    'robozzleObjects',
+    'robozzleCanvas',
+    'robozzleMain'
   ])
   .config(function ($routeProvider) {
     $routeProvider

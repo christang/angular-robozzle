@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('robozzleApp')
+angular.module('robozzleMain', ['robozzleObjects'])
   .controller('MainCtrl', [
     '$scope', 'World', 'Heading', 'Material', 'Color', 'Program', 'Op',
     function ($scope, World, Heading, Material, Color, Program, Op) {
@@ -138,7 +138,6 @@ angular.module('robozzleApp')
         $scope.program.classAt = function (x, y) {
           var step = $scope.program.stepAt(x + 1, y),
               color = step.color,
-              op = step.op,
               isNOP = (step.op === Op.NOP),
               classes = [];
 

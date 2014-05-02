@@ -3,7 +3,7 @@
 describe('Service: robozzle', function () {
 
   // load the service's module
-  beforeEach(module('robozzleApp'));
+  beforeEach(module('robozzleObjects'));
 
   var Op, Color, Heading, Material;
 
@@ -213,14 +213,29 @@ describe('Service: robozzle', function () {
   describe('Factory: Program', function () {
 
     // instantiate factory
-    var Program;
+    var Program, someProgram, fns, poss;
 
     beforeEach(inject(function (_Program_) {
       Program = _Program_;
+      fns     = 2;
+      poss    = 10;
+      var ini = _.map(_.range(fns), function() { return poss; });
+      someProgram = new Program(ini);
     }));
 
-    describe('should run a simple program', function () {
-      
+    it('should create a program with a step', function () {
+      var fn    = _.random(1,fns),
+          pos   = _.random(0,9),
+          op    = _.random(0,8),
+          color = _.random(0,3);
+
+      expect(someProgram.stepAt(fn, pos).op).toEqual(Op.NOP);
+      expect(someProgram.stepAt(fn, pos).color).toEqual(Color.CLEAR);
+
+      someProgram.setFuncStep(fn, pos, op, color);
+
+      expect(someProgram.stepAt(fn, pos).op).toEqual(op);
+      expect(someProgram.stepAt(fn, pos).color).toEqual(color);
     });
 
   });
