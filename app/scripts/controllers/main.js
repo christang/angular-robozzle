@@ -64,6 +64,9 @@ angular.module('robozzleMain', ['robozzleObjects'])
 
         $scope.world.classAt = function (x, y) {
 
+          var tile = $scope.world.at(x, y),
+              classes = [];
+
           // if scope.world.at(x,y).isVoid 
           //   classes.push(StyleMap.void)
           // else /tile/
@@ -73,27 +76,18 @@ angular.module('robozzleMain', ['robozzleObjects'])
           //   if /tile/ hasShip
           //     classes.push(StyleMap.ship)
 
-          var tile = $scope.world.grid[y][x],
-              color = tile.color,
-              isVoid = (tile.material === Material.VOID),
-              classes = [];
-
-          classes.push(isVoid ? classVoid[0] : classMap[color][0]);
-
-          var currentX = $scope.world.currentX,
-              currentY = $scope.world.currentY,
-              isCurrent = (currentX === x && currentY === y);
-
-          if (isCurrent) {
-            classes.push(classShip[0]);
+          if (tile.isVoid) {
+            classes.push(classVoid[0]);
+          } else {
+            classes.push(classMap[tile.color][0]);
+            if (tile.hasStar) {
+              classes.push(classStar[0]);
+            }
+            if (tile.hasShip) {
+              classes.push(classShip[0]);
+            }
           }
-
-          var isStar = (tile.material === Material.STAR);
-
-          if (isStar) {
-            classes.push(classStar[0]);
-          }
-
+            
           return classes.join(' ');
         };
 
@@ -109,19 +103,20 @@ angular.module('robozzleMain', ['robozzleObjects'])
         var starTile = ['\uf08a', ''];
 
         $scope.world.iconAt = function (x, y) {
-          var currentX = $scope.world.currentX,
-              currentY = $scope.world.currentY,
-              currentHeading = $scope.world.currentHeading,
-              isCurrent = (currentX === x && currentY === y);
 
-          if (isCurrent) {
-            return iconMap[currentHeading][0];
+          var tile = $scope.world.at(x, y);
+
+          if (tile.isVoid) {
+            return ' ';
+          } else {
+            if (tile.hasStar) {
+              return starTile[0];
+            }
+            if (tile.hasShip) {
+              return iconMap[tile.heading][0];
+            }
           }
 
-          var tile = $scope.world.grid[y][x],
-              isStar = (tile.material === Material.STAR);
-
-          return isStar ? starTile[0] : ' ';
         };
       }
 
