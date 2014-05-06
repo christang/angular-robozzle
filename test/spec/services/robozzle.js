@@ -69,6 +69,106 @@ describe('Service: robozzle', function () {
 
   });
 
+  describe('Factory: WorldEditor', function() {
+    
+    // instantiate factory
+    var WorldEditor, someBuilder,
+        maxX, maxY, randX, randY, shipX, shipY, randColor, randHeading;
+
+    beforeEach(inject(function (_WorldEditor_) {
+      WorldEditor = _WorldEditor_;
+      maxX = 4;
+      maxY = 3;
+      someBuilder = new WorldEditor(maxX, maxY + 1);
+
+      randX = _.random(maxX - 1);
+      randY = _.random(maxY - 1);
+      randColor = _.random(3);
+      randHeading = _.random(3);
+
+      shipX = _.random(maxX - 1);
+      shipY = maxY;
+    }));
+
+    it('should un/set a ship', function() {
+      var world = someBuilder
+        .ship(shipX, shipY)
+        .build();
+
+      // todo: expect someBuilder.at...
+      expect(world.at(shipX, shipY).isVoid).toBe(false);
+      expect(world.at(shipX, shipY).hasStar).toBe(false);
+      expect(world.at(shipX, shipY).hasShip).toBe(true);
+      expect(world.at(shipX, shipY).color).toEqual(Color.CLEAR);
+      expect(world.at(shipX, shipY).heading).toEqual(Heading.UP);
+
+      world = someBuilder
+        .tile(shipX, shipY, randColor)
+        .build();
+
+      expect(world.at(shipX, shipY).color).toEqual(randColor);
+
+      world = someBuilder
+        .heading(randHeading)
+        .build();
+
+      expect(world.at(shipX, shipY).heading).toBe(randHeading);
+
+      expect(someBuilder.unsetShip().build).toThrow('missing heading');
+    });
+
+    it('should un/set a tile', function() {
+      var world = someBuilder
+        .ship(shipX, shipY)
+        .tile(randX, randY)
+        .build();
+
+      expect(world.at(randX, randY).isVoid).toBe(false);
+      expect(world.at(randX, randY).hasStar).toBe(false);
+      expect(world.at(randX, randY).hasShip).toBe(false);
+      expect(world.at(randX, randY).color).toEqual(Color.CLEAR);
+
+      world = someBuilder
+        .tile(randX, randY, randColor)
+        .build();
+
+      expect(world.at(randX, randY).color).toEqual(randColor);
+
+      world = someBuilder
+        .unsetTile(randX, randY)
+        .build();
+
+      expect(world.at(randX, randY).isVoid).toBe(true);
+    });
+
+    it('should un/set a star', function() {
+      var world = someBuilder
+        .ship(shipX, shipY)
+        .star(randX, randY)
+        .build();
+
+      expect(world.at(randX, randY).isVoid).toBe(false);
+      expect(world.at(randX, randY).hasStar).toBe(true);
+      expect(world.at(randX, randY).hasShip).toBe(false);
+      expect(world.at(randX, randY).color).toEqual(Color.CLEAR);
+
+      world = someBuilder
+        .tile(randX, randY, randColor)
+        .build();
+
+      expect(world.at(randX, randY).hasStar).toBe(true);
+      expect(world.at(randX, randY).color).toEqual(randColor);
+
+      world = someBuilder
+        .unsetStar(randX, randY)
+        .build();
+
+      expect(world.at(randX, randY).isVoid).toBe(false);
+      expect(world.at(randX, randY).hasStar).toBe(false);
+    });
+
+  });
+
   describe('Factory: World', function () {
 
     // instantiate factory

@@ -2,8 +2,8 @@
 
 angular.module('robozzleMain', ['robozzleObjects'])
   .controller('MainCtrl', [
-    '$scope', 'Stepper', 'World', 'Heading', 'Material', 'Color', 'Program', 'Op',
-    function ($scope, Stepper, World, Heading, Material, Color, Program, Op) {
+    '$scope', 'Stepper', 'WorldEditor', 'Heading', 'Material', 'Color', 'Program', 'Op',
+    function ($scope, Stepper, WorldEditor, Heading, Material, Color, Program, Op) {
     
       $scope.range = _.range;
 
@@ -29,22 +29,14 @@ angular.module('robozzleMain', ['robozzleObjects'])
       }
 
       function initWorld() {
-        var maxX = 9,
-            maxY = 7,
-            currentHeading = Heading.UP,
-            currentX = 4,
-            currentY = 3,
-            world = new World(maxX, maxY, currentHeading, currentX, currentY);
+        var builder = new WorldEditor(9, 7)
+          .ship(4, 3)
+          .tile(5, 3)
+          .tile(4, 2)
+          .star(5, 2)
+          .heading(Heading.UP);
 
-        _.each(_.range(2), function (dy) {
-          _.each(_.range(2), function (dx) {
-            world.setTile(currentX + dx, currentY - dy, Material.TILE, Color.CLEAR);
-          });
-        });
- 
-        world.setTile(currentX + 1, currentY - 1, Material.STAR, Color.CLEAR);
-
-        $scope.world = world;
+        $scope.world = builder.build();
       }
 
       function initProgram() {
@@ -71,6 +63,16 @@ angular.module('robozzleMain', ['robozzleObjects'])
             classShip = ['tile-ship', ''];
 
         $scope.world.classAt = function (x, y) {
+
+          // if scope.world.at(x,y).isVoid 
+          //   classes.push(StyleMap.void)
+          // else /tile/
+          //   classes.push(StyleMap.tile, StyleMap.color[c])
+          //   if /tile/ hasStar 
+          //     classes.push(StyleMap.star)
+          //   if /tile/ hasShip
+          //     classes.push(StyleMap.ship)
+
           var tile = $scope.world.grid[y][x],
               color = tile.color,
               isVoid = (tile.material === Material.VOID),
@@ -96,15 +98,6 @@ angular.module('robozzleMain', ['robozzleObjects'])
         };
 
         var iconMap = {};
-
-        // Glyphicon mappings
-
-        // iconMap[Heading.UP]    = ['\ue113', ''];
-        // iconMap[Heading.RIGHT] = ['\ue080', ''];
-        // iconMap[Heading.DOWN]  = ['\ue114', ''];
-        // iconMap[Heading.LEFT]  = ['\ue079', ''];
-
-        // var starTile = ['\ue104', ''];
 
         // FontAwesome mappings
 

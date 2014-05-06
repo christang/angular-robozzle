@@ -120,6 +120,147 @@ angular.module('robozzleObjects', [])
 
   }])
 
+  .factory('WorldEditor', ['World', 'Material', 'Color', 'Heading', 'assert', function __classFactory (
+    World, Material, Color, Heading, assert) {
+
+    function WorldEditor (maxX, maxY) {
+      this.maxX = maxX || 10;
+      this.maxY = maxY || 10;
+      this.tiles = {};
+      this.stars = {};
+    }
+
+    function assertBounds(self) {
+      assert(!!self.maxX, 'x bound not set');
+      assert(!!self.maxY, 'y bound not set');
+    }
+
+    function assertWithinBounds(self, x, y) {
+      assertBounds(self);
+      assert(x >= 0 && x < self.maxX, 'x not within bounds');
+      assert(y >= 0 && y < self.maxY, 'y not within bounds');
+    }
+
+    function assertWellDefined(self) {
+      assert(_.isNumber(self.H), 'missing heading');
+      assert(_.isNumber(self.X), 'missing X');
+      assert(_.isNumber(self.Y), 'missing Y');
+      assertWithinBounds(self, self.X, self.Y);
+    }
+
+    WorldEditor.prototype = {
+      at: function (x, y) {
+        var t = [x,y].join(':'),
+          tileHelper = {
+            isVoid: !!this.tiles[t]
+          };
+
+        if (!tileHelper.isVoid) {
+          tileHelper.hasStar = !!this.stars[t];
+          tileHelper.hasShip = (this.X === x && this.Y === y);
+          tileHelper.color = this.tiles[t];
+          if (tileHelper.hasShip) {
+            tileHelper.heading = this.H;
+          }
+        }
+        return tileHelper;
+      },
+      tile: function(x, y, c) {
+        assertWithinBounds(this, x, y);
+        var t = [x,y].join(':');
+        this.tiles[t] = c || Color.CLEAR ;
+        return this;
+      },
+      unsetTile: function(x, y) {  // an unset tile is a void
+        var t = [x,y].join(':');
+        delete(this.tiles[t]);
+        delete(this.stars[t]);  // unsetting a tile with a star unsets the star
+        if (x === this.X && y === this.Y) {
+          this.unsetShip();  // unsetting a tile with a ship unsets the ship
+        }
+        return this;
+      },
+      star: function(x, y, c) {
+        assertWithinBounds(this, x, y);
+        var t = [x,y].join(':');
+        this.stars[t] = true;
+        this.tiles[t] = c || this.tiles[t] || Color.CLEAR;  // adding a star on a void changes it to tile
+        if (x === this.X && y === this.Y) {
+          this.unsetShip();  // setting a tile with a ship to star unsets the ship
+        }
+        return this;
+      },
+      unsetStar: function(x, y) {
+        var t = [x,y].join(':');
+        delete(this.stars[t]);
+        return this;
+      },
+      ship: function(x, y, c, h) {
+        assertWithinBounds(this, x, y);
+        var t = [x,y].join(':');
+        this.X = parseInt(x);
+        this.Y = parseInt(y);
+        this.H = h || this.H || Heading.UP;
+        this.tiles[t] = c || this.tiles[t] || Color.CLEAR;  // adding a ship on a void changes it to tile
+        delete(this.stars[t]);  // adding a ship on a star unsets it
+        return this;
+      },
+      unsetShip: function() {
+        this.X = null;
+        this.Y = null;
+        this.H = null;
+        return this;
+      },
+      heading: function(h) {
+        // assert ship here?
+        this.H = parseInt(h);
+        return this;
+      },
+      build: function () {
+        assertWellDefined(this);
+        var world = new World(this.maxX, this.maxY, this.H, this.X, this.Y);
+        _.each(this.tiles, function(val, key) {
+          var t = key.split(':'),
+              x = parseInt(t[0]),
+              y = parseInt(t[1]),
+              c = parseInt(val);
+          world.setTile(x, y, Material.TILE, c);
+        });
+
+        var tiles = this.tiles;
+        _.each(this.stars, function(val, key) {
+          var t = key.split(':'),
+              x = parseInt(t[0]),
+              y = parseInt(t[1]),
+              c = tiles[key];
+          world.setTile(x, y, Material.STAR, c);
+        });
+
+        world.at = function (x, y) {
+          var tileHelper = {
+            isVoid: this.grid[y][x].material === Material.VOID
+          };
+
+          if (!tileHelper.isVoid) {
+            tileHelper.hasStar = this.grid[y][x].material === Material.STAR;
+            tileHelper.hasShip = this.currentX === x && this.currentY === y;
+            tileHelper.color = this.grid[y][x].color;
+            if (tileHelper.hasShip) {
+              tileHelper.heading = this.currentHeading;
+            }
+          }
+
+          return tileHelper;
+        };
+
+        return world;
+      }
+    };
+
+    return WorldEditor;
+
+  }])
+
   .factory('World', ['Heading', 'Material', 'Tile', 'assert', function __classFactory(
     Heading, Material, Tile, assert) {
 
