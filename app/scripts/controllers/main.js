@@ -2,8 +2,8 @@
 
 angular.module('robozzleMain', ['robozzleObjects'])
   .controller('MainCtrl', [
-    '$scope', 'Stepper', 'WorldEditor', 'Heading', 'Material', 'Color', 'Program', 'Op',
-    function ($scope, Stepper, WorldEditor, Heading, Material, Color, Program, Op) {
+    '$scope', 'Stepper', 'WorldEditor', 'ProgramEditor', 'Heading', 'Material', 'Color', 'Op',
+    function ($scope, Stepper, WorldEditor, ProgramEditor, Heading, Material, Color, Op) {
     
       $scope.range = _.range;
 
@@ -40,14 +40,12 @@ angular.module('robozzleMain', ['robozzleObjects'])
       }
 
       function initProgram() {
-        var funcSteps = [10, 10, 10, 10, 10],
-            program = new Program(funcSteps);
+        var builder = new ProgramEditor(5)
+          .op(0, 0, Op.FWD)
+          .op(0, 1, Op.R90)
+          .op(0, 2, Op.F1);
 
-        program.setFuncStep(1, 0, Op.FWD, Color.CLEAR);
-        program.setFuncStep(1, 1, Op.R90, Color.CLEAR);
-        program.setFuncStep(1, 2, Op.F1, Color.CLEAR);
-
-        $scope.program = program;
+        $scope.program = builder.build();
       }
 
       var classMap = {};

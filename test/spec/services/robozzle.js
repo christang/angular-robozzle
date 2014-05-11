@@ -311,6 +311,82 @@ describe('Service: robozzle', function () {
 
   });
 
+  describe('Factory: ProgramEditor', function() {
+    
+    // instantiate factory
+    var ProgramEditor, someEditor, sizeFn1 = 3, sizeFn2 = 3;
+
+    beforeEach(inject(function (_ProgramEditor_) {
+      ProgramEditor = _ProgramEditor_;
+      someEditor = new ProgramEditor(sizeFn1, sizeFn2);
+    }));
+
+    it('should set op of a step of a function', function() {
+      expect(someEditor.at(1, 2).op).toEqual(Op.NOP);
+      expect(someEditor.at(1, 2).color).toEqual(Color.CLEAR);
+
+      var randOp = _.random(9);
+
+      someEditor.op(1, 2, randOp);
+
+      expect(someEditor.at(1, 2).op).toEqual(randOp);
+      expect(someEditor.at(1, 2).color).toEqual(Color.CLEAR);
+
+      var program = someEditor.build();
+
+      expect(program.at(1, 2).op).toEqual(randOp);
+      expect(program.at(1, 2).color).toEqual(Color.CLEAR);
+    });
+
+    it('should set color of step of a function', function() {
+      expect(someEditor.at(0, 0).op).toEqual(Op.NOP);
+      expect(someEditor.at(0, 0).color).toEqual(Color.CLEAR);
+
+      var randColor = _.random(4),
+          program = someEditor
+            .color(0, 0, randColor)
+            .op(0, 1, Op.F1)
+            .color(0, 1, randColor)
+            .build();
+
+      expect(someEditor.at(0, 0).op).toEqual(Op.NOP);
+      expect(someEditor.at(0, 0).color).toEqual(randColor);
+      expect(someEditor.at(0, 1).op).toEqual(Op.F1);
+      expect(someEditor.at(0, 1).color).toEqual(randColor);
+
+      // noop are colorless
+      expect(program.at(0, 0).op).toEqual(Op.NOP);
+      expect(program.at(0, 0).color).toEqual(Color.CLEAR);
+      expect(program.at(0, 1).op).toEqual(Op.F1);
+      expect(program.at(0, 1).color).toEqual(randColor);
+    });
+
+    it('should resize the program in number of functions/steps', function() {
+      expect(someEditor.fns()).toEqual(2);
+      expect(function() { someEditor.at(2,0); }).toThrow('Assertion failed');
+
+      someEditor.fns(3);
+      someEditor.steps(2, 2);
+      someEditor.at(2, 0, Op.L90, Color.RED);
+
+      expect(someEditor.fns()).toEqual(3);
+      expect(someEditor.steps(2)).toEqual(2);
+      expect(someEditor.at(2, 0).op).toEqual(Op.L90);
+      expect(someEditor.at(2, 0).color).toEqual(Color.RED);
+
+      someEditor.steps(2, 1);
+      expect(someEditor.fns()).toEqual(3);
+      expect(someEditor.steps(2)).toEqual(1);
+      expect(someEditor.at(2, 0).op).toEqual(Op.L90);
+      expect(someEditor.at(2, 0).color).toEqual(Color.RED);
+
+      someEditor.fns(2);
+      expect(someEditor.fns()).toEqual(2);
+      expect(function() { someEditor.at(2,0); }).toThrow('Assertion failed');
+    });
+
+  });
+
   describe('Factory: Program', function () {
 
     // instantiate factory
@@ -362,7 +438,9 @@ describe('Service: robozzle', function () {
 
     function makeProgram (Program, Op, Color) {
       var program = new Program([3,3,3,3,3])
-            .setFuncStep(1, 0, Op.F2, Color.CLEAR)
+            .setFuncStep(1, 0, Op.L90, Color.CLEAR)
+            .setFuncStep(1, 1, Op.R90, Color.CLEAR)
+            .setFuncStep(1, 2, Op.F2, Color.CLEAR)
             .setFuncStep(2, 1, Op.F3, Color.CLEAR) // should filter out noop @pos=0
             .setFuncStep(3, 2, Op.F4, Color.CLEAR) // should filter out noop @pos=0,1
             .setFuncStep(4, 0, Op.F5, Color.CLEAR)
@@ -386,16 +464,16 @@ describe('Service: robozzle', function () {
 
       // first 5 steps
 
-      tookStep = someStepper.step(4, spyOnSafeStep, spyOnBadStep, spyOnComplete);
+      tookStep = someStepper.step(6, spyOnSafeStep, spyOnBadStep, spyOnComplete);
 
       // steps expected:
 
-      // F2 -> F3 -> F4 -> F5 
-      // ^safe       ^safe   
-      //       ^safe       ^safe
+      // L90 -> R90 -> F2 -> F3 -> F4 -> F5 
+      // ^safe       ^safe         ^safe
+      //       ^safe       ^safe         ^safe
 
       expect(spyOnSafeStep).toHaveBeenCalled();
-      expect(spyOnSafeStep.callCount).toEqual(4);     // four initially ...
+      expect(spyOnSafeStep.callCount).toEqual(6);     // six initially ...
 
       expect(spyOnComplete).not.toHaveBeenCalled();
       expect(spyOnBadStep).not.toHaveBeenCalled();
@@ -414,7 +492,7 @@ describe('Service: robozzle', function () {
       //           ^safe        ^safe
 
       expect(spyOnSafeStep).toHaveBeenCalled();
-      expect(spyOnSafeStep.callCount).toEqual(4 + 4);  // and four more
+      expect(spyOnSafeStep.callCount).toEqual(6 + 4);  // and four more
 
       expect(spyOnComplete).toHaveBeenCalled();
       expect(spyOnComplete.callCount).toEqual(1);

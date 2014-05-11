@@ -53,6 +53,13 @@ angular.module('robozzleObjects', [])
 
   })
 
+  .value('Configs', {
+
+    maxFuncs        : 5,
+    maxStepsPerFunc : 10
+
+  })
+
   .factory('Step', [function __classFactory() {
 
     function Step(op, color) {
@@ -152,7 +159,7 @@ angular.module('robozzleObjects', [])
       at: function (x, y) {
         var t = [x,y].join(':'),
           tileHelper = {
-            isVoid: !!this.tiles[t]
+            isVoid: !(this.tiles[t] || this.tiles[t] === 0)
           };
 
         if (!tileHelper.isVoid) {
@@ -373,17 +380,116 @@ angular.module('robozzleObjects', [])
 
   }])
 
-  .factory('Program', ['Color', 'Op', 'Stack', 'Step', 'assert', function __classFactory(
-    Color, Op, Stack, Step, assert) {
+  .factory('ProgramEditor', ['Configs', 'Color', 'Op', 'Program', 'Step', 'assert', function __classFactory(
+    Configs, Color, Op, Program, Step, assert) {
 
-    var maxFuncs = 5,
-        maxStepsPerFunc = 10;
+    var mem = [];
+
+    function ProgramEditor () {
+      assert(arguments.length <= Configs.maxFuncs);
+      _.each(arguments, function (val) {
+        mem.push(fill(val));
+      });
+    }
+
+    function fill (len) {
+      assert(len >= 0 && len < Configs.maxStepsPerFunc);
+      return _.map(_.range(len), function () {
+        return new Step(Op.NOP, Color.CLEAR);
+      });
+    }
+
+    ProgramEditor.prototype = {
+      at: function (r, c, newOp, newColor) {
+        // two-way binding
+        assert(r >= 0 && r < mem.length);
+        assert(c >= 0 && c < mem[r].length);
+        if (newOp || newColor) {
+          mem[r][c].op = newOp || mem[r][c].op;
+          mem[r][c].color = newColor || mem[r][c].color;
+          return this;
+        }
+        return mem[r][c];
+      },
+      op: function (r, c, newOp) {
+        assert(r >= 0 && r < mem.length);
+        assert(c >= 0 && c < mem[r].length);
+        mem[r][c].op = newOp;
+        return this;
+      },
+      color: function (r, c, newColor) {
+        assert(r >= 0 && r < mem.length);
+        assert(c >= 0 && c < mem[r].length);
+        mem[r][c].color = newColor;
+        return this;
+      },
+      fns: function (mLength) {
+        // return the length of program
+        if (!mLength) {
+          return mem.length;
+        }
+        // or set its length
+        assert(mLength >= 0 && mLength <= Configs.maxFuncs);
+        if (mLength < mem.length) {
+          mem = mem.slice(0, mLength);
+        } else if (mLength > mem.length) {
+          _.each(_.range(mLength - mem.length), function () {
+            mem.push([]);
+          });
+        }
+        return this;
+      },
+      steps: function (r, rLength) {
+        // return the length of function
+        assert(r >= 0 && r < mem.length);
+        if (!rLength) {
+          return mem[r].length;
+        }
+        // or set its length
+        assert(rLength >= 0 && rLength < Configs.maxStepsPerFunc);
+        if (rLength < mem[r].length) {
+          mem[r] = mem[r].slice(0, rLength);
+        } else if (rLength > mem[r].length) {
+          _.each(_.range(rLength - mem[r].length), function () {
+            mem[r].push(new Step(Op.NOP, Color.CLEAR));
+          });
+        }
+        return this;
+      },
+      build: function () {
+        var program = new Program(_.map(mem, function (fn) {
+          return fn.length;
+        }));
+
+        _.each(mem, function (fn, r) {
+          _.each(fn, function (step, c) {
+            // make noop colorless
+            var color = step.op === Op.NOP ? Color.CLEAR : step.color;
+            program.setFuncStep(r + 1, c, step.op, color);
+          });
+        });
+
+        program.at = function (r, c) {
+          // one-way binding
+          return program.stepAt(r + 1, c);
+        };
+
+        return program;
+      }
+    };
+
+    return ProgramEditor;
+
+  }])
+
+  .factory('Program', ['Configs', 'Color', 'Op', 'Stack', 'Step', 'assert', function __classFactory(
+    Configs, Color, Op, Stack, Step, assert) {
 
     function Program(funcSteps) {
-      assert(funcSteps.length <= maxFuncs);
+      assert(funcSteps.length <= Configs.maxFuncs);
 
       this.functions = _.map(funcSteps, function __initProgram(steps) {
-        assert(steps <= maxStepsPerFunc);
+        assert(steps <= Configs.maxStepsPerFunc);
         return arrayOf(steps, Step.encode(Op.NOP, Color.CLEAR));
       });
 
@@ -396,7 +502,7 @@ angular.module('robozzleObjects', [])
 
     Program.prototype = {
       stepAt: function (fn, pos) {
-        assert(fn <= maxFuncs);
+        assert(fn <= Configs.maxFuncs);
 
         var fun = this.functions[fn - 1],
             len = fun.length;
