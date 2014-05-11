@@ -96,6 +96,12 @@ describe('Service: robozzle', function () {
         .build();
 
       // todo: expect someBuilder.at...
+      expect(someBuilder.at(shipX, shipY).isVoid).toBe(false);
+      expect(someBuilder.at(shipX, shipY).hasStar).toBe(false);
+      expect(someBuilder.at(shipX, shipY).hasShip).toBe(true);
+      expect(someBuilder.at(shipX, shipY).color).toEqual(Color.CLEAR);
+      expect(someBuilder.at(shipX, shipY).heading).toEqual(Heading.UP);
+
       expect(world.at(shipX, shipY).isVoid).toBe(false);
       expect(world.at(shipX, shipY).hasStar).toBe(false);
       expect(world.at(shipX, shipY).hasShip).toBe(true);
@@ -106,13 +112,15 @@ describe('Service: robozzle', function () {
         .tile(shipX, shipY, randColor)
         .build();
 
+      expect(someBuilder.at(shipX, shipY).color).toEqual(randColor);
       expect(world.at(shipX, shipY).color).toEqual(randColor);
 
       world = someBuilder
         .heading(randHeading)
         .build();
 
-      expect(world.at(shipX, shipY).heading).toBe(randHeading);
+      expect(someBuilder.at(shipX, shipY).heading).toEqual(randHeading);
+      expect(world.at(shipX, shipY).heading).toEqual(randHeading);
 
       expect(someBuilder.unsetShip().build).toThrow('missing heading');
     });
@@ -123,6 +131,11 @@ describe('Service: robozzle', function () {
         .tile(randX, randY)
         .build();
 
+      expect(someBuilder.at(randX, randY).isVoid).toBe(false);
+      expect(someBuilder.at(randX, randY).hasStar).toBe(false);
+      expect(someBuilder.at(randX, randY).hasShip).toBe(false);
+      expect(someBuilder.at(randX, randY).color).toEqual(Color.CLEAR);
+
       expect(world.at(randX, randY).isVoid).toBe(false);
       expect(world.at(randX, randY).hasStar).toBe(false);
       expect(world.at(randX, randY).hasShip).toBe(false);
@@ -132,12 +145,14 @@ describe('Service: robozzle', function () {
         .tile(randX, randY, randColor)
         .build();
 
+      expect(someBuilder.at(randX, randY).color).toEqual(randColor);
       expect(world.at(randX, randY).color).toEqual(randColor);
 
       world = someBuilder
         .unsetTile(randX, randY)
         .build();
 
+      expect(someBuilder.at(randX, randY).isVoid).toBe(true);
       expect(world.at(randX, randY).isVoid).toBe(true);
     });
 
@@ -146,6 +161,11 @@ describe('Service: robozzle', function () {
         .ship(shipX, shipY)
         .star(randX, randY)
         .build();
+
+      expect(someBuilder.at(randX, randY).isVoid).toBe(false);
+      expect(someBuilder.at(randX, randY).hasStar).toBe(true);
+      expect(someBuilder.at(randX, randY).hasShip).toBe(false);
+      expect(someBuilder.at(randX, randY).color).toEqual(Color.CLEAR);
 
       expect(world.at(randX, randY).isVoid).toBe(false);
       expect(world.at(randX, randY).hasStar).toBe(true);
@@ -156,12 +176,18 @@ describe('Service: robozzle', function () {
         .tile(randX, randY, randColor)
         .build();
 
+      expect(someBuilder.at(randX, randY).hasStar).toBe(true);
+      expect(someBuilder.at(randX, randY).color).toEqual(randColor);
+
       expect(world.at(randX, randY).hasStar).toBe(true);
       expect(world.at(randX, randY).color).toEqual(randColor);
 
       world = someBuilder
         .unsetStar(randX, randY)
         .build();
+
+      expect(someBuilder.at(randX, randY).isVoid).toBe(false);
+      expect(someBuilder.at(randX, randY).hasStar).toBe(false);
 
       expect(world.at(randX, randY).isVoid).toBe(false);
       expect(world.at(randX, randY).hasStar).toBe(false);
