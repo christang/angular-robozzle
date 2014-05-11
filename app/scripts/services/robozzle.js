@@ -409,6 +409,7 @@ angular.module('robozzleObjects', [])
           mem[r][c].color = newColor || mem[r][c].color;
           return this;
         }
+        mem[r][c].isNoOp = function () { return this.op === Op.NOP; };
         return mem[r][c];
       },
       op: function (r, c, newOp) {
@@ -471,7 +472,9 @@ angular.module('robozzleObjects', [])
 
         program.at = function (r, c) {
           // one-way binding
-          return program.stepAt(r + 1, c);
+          var tile = program.stepAt(r + 1, c);
+          tile.isNoOp = function () { return this.op === Op.NOP; };
+          return tile;
         };
 
         return program;

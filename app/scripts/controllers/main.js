@@ -122,17 +122,17 @@ angular.module('robozzleMain', ['robozzleObjects'])
         var classNOP    = ['tile-nop', ''],
             classCursor = ['tile-cursor', ''];
 
-        $scope.program.classAt = function (fn, pos) {
-          var step = $scope.program.stepAt(fn + 1, pos),
-              color = step.color,
-              isNOP = (step.op === Op.NOP),
+        $scope.program.isCurrent = function (r, c) {
+          return (r + 1 === $scope.currentFn && c === $scope.currentPos);
+        }
+
+        $scope.program.classAt = function (r, c) {
+
+          var tile = $scope.program.at(r, c),
               classes = [];
 
-          classes.push(isNOP ? classNOP[0] : classMap[color][0]);
-
-          var isCurrent = (fn + 1 === $scope.currentFn && pos === $scope.currentPos);
-
-          if (isCurrent) {
+          classes.push(tile.isNoOp() ? classNOP[0] : classMap[tile.color][0]);
+          if ($scope.program.isCurrent()) {
             classes.push(classCursor[0]);
           }
 
@@ -151,11 +151,9 @@ angular.module('robozzleMain', ['robozzleObjects'])
         iconMap[Op.L90] = ['\uf0e2', ''];
         iconMap[Op.R90] = ['\uf01e', ''];
 
-        $scope.program.iconAt = function (x, y) {
-          var step = $scope.program.stepAt(x + 1, y),
-              op = step.op;
-
-          return iconMap[op][0];
+        $scope.program.iconAt = function (r, c) {
+          var step = $scope.program.at(r, c);
+          return iconMap[step.op][0];
         };
       }
 
