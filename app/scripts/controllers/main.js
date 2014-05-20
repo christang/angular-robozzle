@@ -105,7 +105,7 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
             classes = classes.concat(StyleMap.classes.colors[tile.color]);
           }
 
-          if ($scope.program.isCurrent()) {
+          if ($scope.program.isCurrent(r, c)) {
             classes = classes.concat(StyleMap.classes.steps.cursor);
           }
 
