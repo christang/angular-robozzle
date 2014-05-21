@@ -33,7 +33,21 @@ angular.module('robozzleCanvas', [])
       template: '<g ng-transclude />',
       restrict: 'E',
       replace: true,
-      transclude: true
+      transclude: true,
+      controller: function _controller() {
+        this.coordOfX = function (x, width, pad, dx) {
+          x -= (dx || this.dx);
+          return x * width + ( 2 * x + 1 ) * pad;
+        };
+        this.coordOfY = function (y, height, pad, dy) {
+          y -= (dy || this.dy);
+          return y * height + ( 2 * y + 1 ) * pad;
+        };
+      },
+      link: function (scoe, $element, $attrs, ctrl) {
+        ctrl.dx = $attrs.dx || 0;
+        ctrl.dy = $attrs.dy || 0;
+      }
     };
   })
 
@@ -43,6 +57,7 @@ angular.module('robozzleCanvas', [])
       templateUrl: 'views/partials/tile.svg',
       restrict: 'E',
       replace: true,
+      require: '^grid',
       scope: {
         x: '@',
         y: '@',
@@ -53,24 +68,16 @@ angular.module('robozzleCanvas', [])
         classes: '@',
         icon: '@'
       },
-      controller: function _controller() {
-        this.coordOfX = function (x, width, pad) {
-          return x * width + ( 2 * x + 1 ) * pad;
-        };
-        this.coordOfY = function (y, height, pad) {
-          return y * height + ( 2 * y + 1 ) * pad;
-        };
-      },
-      link: function _linker(scope, $element, $attrs, tileCtrl) {
+      link: function _linker(scope, $element, $attrs, ctrl) {
         $attrs.$observe('posX', function __setX(newX) {
           if (newX) {
-            scope.x = tileCtrl.coordOfX(newX, scope.width,
+            scope.x = ctrl.coordOfX(newX, scope.width,
                                         scope.horizPad);
           }
         });
         $attrs.$observe('posY', function __setY(newY) {
           if (newY) {
-            scope.y = tileCtrl.coordOfY(newY, scope.height,
+            scope.y = ctrl.coordOfY(newY, scope.height,
                                         scope.verticalPad);
           }
         });
