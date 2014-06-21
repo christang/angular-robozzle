@@ -81,7 +81,7 @@ body {
 text {
   fill:white;
   text-anchor: middle;
-  alignment-baseline: central; 
+  dominant-baseline: central; 
   font-family: 'FontAwesome';
 
   -webkit-touch-callout: none;
