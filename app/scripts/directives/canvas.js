@@ -92,6 +92,78 @@ angular.module('robozzleCanvas', [])
     };
   }])
 
+  .directive('polar', ['applyAndSet', function (applyAndSet) {
+    return {
+      type: 'svg',
+      scope: true,
+      template: '<g ng-transclude />',
+      restrict: 'E',
+      replace: true,
+      transclude: true,
+      controller: function _controller() {
+        this.polarToCartesian = function (radius, angleInDegrees) {
+          var angleInRadians = angleInDegrees * Math.PI / 180.0;
+          var x = this.cx + radius * Math.cos(angleInRadians);
+          var y = this.cy + radius * Math.sin(angleInRadians);
+          return {'x':x, 'y':y};
+        }     
+      },
+      link: function _linker(scope, $element, $attrs, ctrl) {
+        $attrs.$observe('n', applyAndSet('n', parseInt, 1, ctrl, scope));
+        $attrs.$observe('cx', applyAndSet('cx', parseInt, 0, ctrl));
+        $attrs.$observe('cy', applyAndSet('cy', parseInt, 0, ctrl));
+        $attrs.$observe('da', applyAndSet('da', parseInt, 0, ctrl));
+      }
+    }
+  }])
+
+  .directive('arc', ['applyAndSet', function (applyAndSet) {
+    return {
+      type: 'svg',
+      templateUrl: 'views/partials/arc.svg',
+      restrict: 'E',
+      replace: true,
+      require: '^polar',
+      scope: {
+        classes: '@',
+        icon: '@'
+      },
+      link: function _linker(scope, $element, $attrs, ctrl) {
+        // filler
+        scope.p = [];
+        scope.tRot = scope.isReflex = 0;
+        _.each(_.range(5), function __init(i) { scope.p[i] = {'x':0,'y':0}; });
+
+        // observers
+        $attrs.$observe('a', applyAndSet('a', parseInt, 0, scope));
+        $attrs.$observe('pad', applyAndSet('pad', parseInt, 5, scope));
+        $attrs.$observe('inner', applyAndSet('inner', parseFloat, 10, scope));
+        $attrs.$observe('outer', applyAndSet('outer', parseFloat, 20, scope));
+
+        // watchers
+        scope.$watch(
+          function __watcher() {
+            return [scope.a, scope.inner, scope.outer, scope.pad];
+          },
+          function __changed() {
+            scope.a = scope.a % ctrl.n;
+            var sweep = 360.0 / ctrl.n,
+                a1 = scope.a * sweep + scope.pad,
+                a2 = (scope.a+1) * sweep - scope.pad,
+                rm = (scope.inner+scope.outer)/2.0,
+                am = (a1+a2)/2.0;
+            scope.p[0] = ctrl.polarToCartesian(scope.outer, a1);
+            scope.p[1] = ctrl.polarToCartesian(scope.outer, a2);
+            scope.p[2] = ctrl.polarToCartesian(scope.inner, a2);
+            scope.p[3] = ctrl.polarToCartesian(scope.inner, a1);
+            scope.p[4] = ctrl.polarToCartesian(rm, am);
+            scope.tRot = am + 90;
+            scope.isReflex = sweep > 180 ? 1 : 0;
+          }, true);
+      }
+    }
+  }])
+
   .value('applyAndSet', function (name, func, dfault) {
     var objs = [];
     for (var i=3; i<arguments.length; i++) { 

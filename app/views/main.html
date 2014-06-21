@@ -23,6 +23,15 @@
 
       </grid>
 
+      <polar cx="100" cy="100" n="4">
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="30"
+             outer="60"
+             icon="+"/>
+
+      </polar>
+
     </sframe>
 
     <sframe transform="translate(175,325)">
@@ -49,5 +58,6 @@
   <button class="btn btn-default" ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">Step</button>
 
   <!--div ng-include="'views/partials/placeholder.html'"></div-->
+  <!--div ng-include="'views/partials/elbow.html'"></div-->
 
 </div>

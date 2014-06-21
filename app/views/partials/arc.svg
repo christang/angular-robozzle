@@ -1,0 +1,16 @@
+<g>
+  <path ng-attr-d="M{{ p[0].x }},{{ p[0].y }}
+                   A{{ outer }},{{ outer }} 0 {{isReflex}},1 {{ p[1].x }},{{ p[1].y }}
+                   L{{ p[2].x }},{{ p[2].y }}
+                   A{{ inner }},{{ inner }} 0 {{isReflex}},0 {{ p[3].x }},{{ p[3].y }}
+                   z" 
+        style="stroke:#660000; fill:#660000;">
+  </path>
+  <text class="{{classes}}"
+        text-anchor="middle" 
+        ng-attr-transform="rotate({{ tRot }} {{ p[4].x }} {{ p[4].y }})"
+        ng-attr-x="{{ p[4].x }}" 
+        ng-attr-y="{{ p[4].y }}">
+    {{icon}}
+  </text>
+</g>
