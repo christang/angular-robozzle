@@ -1,5 +1,5 @@
 <g>
-  <g ng-attr-transform="translate({{horizPad}}, {{verticalPad}})">
+  <g ng-attr-transform="translate({{hPad}}, {{vPad}})">
     <rect rx="4" ry="4"
           class="{{classes}}" 
           ng-attr-x="{{x || 0}}" 
@@ -11,8 +11,8 @@
   <text class="{{classes}}" 
         ng-attr-x="{{x || 0}}" 
         ng-attr-y="{{y || 0}}" 
-        ng-attr-dx="{{parseInt(horizPad)+width/2}}" 
-        ng-attr-dy="{{parseInt(verticalPad)+height/2}}">
+        ng-attr-dx="{{parseInt(hPad)+width/2}}" 
+        ng-attr-dy="{{parseInt(vPad)+height/2}}">
     {{icon}}
   </text>
 </g>

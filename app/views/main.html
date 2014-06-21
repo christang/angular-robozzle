@@ -14,8 +14,8 @@
               pos-y="{{y}}"
               width="{{view.world.tile.width}}"
               height="{{view.world.tile.height}}"
-              horiz-pad="{{view.world.tile.horizPad}}"
-              vertical-pad="{{view.world.tile.verticalPad}}"
+              h-pad="{{view.world.tile.horizPad}}"
+              v-pad="{{view.world.tile.verticalPad}}"
               classes="{{world.classAt(x,y)}}" 
               icon="{{world.iconAt(x,y)}}"
               
@@ -44,8 +44,8 @@
               pos-x="{{pos}}"
               width="{{view.program.tile.width}}"
               height="{{view.program.tile.height}}"
-              horiz-pad="{{view.program.tile.horizPad}}"
-              vertical-pad="{{view.program.tile.verticalPad}}"
+              h-pad="{{view.program.tile.horizPad}}"
+              v-pad="{{view.program.tile.verticalPad}}"
               classes="{{program.classAt(fn,pos)}}" 
               icon="{{program.iconAt(fn,pos)}}"
               
@@ -55,9 +55,9 @@
 
   </canvas>
 
-  <button class="btn btn-default" ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">Step</button>
-
   <!--div ng-include="'views/partials/placeholder.html'"></div-->
   <!--div ng-include="'views/partials/elbow.html'"></div-->
+
+  <button class="btn btn-default" ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">Step</button>
 
 </div>

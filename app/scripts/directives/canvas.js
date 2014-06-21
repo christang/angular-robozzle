@@ -69,24 +69,24 @@ angular.module('robozzleCanvas', [])
         $attrs.$observe('posY', applyAndSet('posY', parseInt, 0, scope));
         $attrs.$observe('width', applyAndSet('width', parseInt, 1, scope));
         $attrs.$observe('height', applyAndSet('height', parseInt, 1, scope));
-        $attrs.$observe('horizPad', applyAndSet('horizPad', parseInt, 0, scope));
-        $attrs.$observe('verticalPad', applyAndSet('verticalPad', parseInt, 0, scope));
+        $attrs.$observe('hPad', applyAndSet('hPad', parseInt, 0, scope));
+        $attrs.$observe('vPad', applyAndSet('vPad', parseInt, 0, scope));
 
         // watchers
         scope.$watch(
           function __watcher() {
-            return [scope.posX, scope.width, scope.horizPad];
+            return [scope.posX, scope.width, scope.hPad];
           },
           function __changed() {
-            scope.x = ctrl.coordOfX(scope.posX, scope.width, scope.horizPad);
+            scope.x = ctrl.coordOfX(scope.posX, scope.width, scope.hPad);
           }, true);
 
         scope.$watch(
           function __watcher() {
-            return [scope.posY, scope.height, scope.verticalPad];
+            return [scope.posY, scope.height, scope.vPad];
           },
           function __changed() {
-            scope.y = ctrl.coordOfX(scope.posY, scope.height, scope.verticalPad);
+            scope.y = ctrl.coordOfX(scope.posY, scope.height, scope.vPad);
           }, true);
       }
     };
@@ -136,20 +136,20 @@ angular.module('robozzleCanvas', [])
 
         // observers
         $attrs.$observe('a', applyAndSet('a', parseInt, 0, scope));
-        $attrs.$observe('pad', applyAndSet('pad', parseInt, 5, scope));
+        $attrs.$observe('rPad', applyAndSet('rPad', parseInt, 5, scope));
         $attrs.$observe('inner', applyAndSet('inner', parseFloat, 10, scope));
         $attrs.$observe('outer', applyAndSet('outer', parseFloat, 20, scope));
 
         // watchers
         scope.$watch(
           function __watcher() {
-            return [scope.a, scope.inner, scope.outer, scope.pad];
+            return [scope.a, scope.inner, scope.outer, scope.rPad];
           },
           function __changed() {
             scope.a = scope.a % ctrl.n;
             var sweep = 360.0 / ctrl.n,
-                a1 = scope.a * sweep + scope.pad,
-                a2 = (scope.a+1) * sweep - scope.pad,
+                a1 = scope.a * sweep + scope.rPad,
+                a2 = (scope.a+1) * sweep - scope.rPad,
                 rm = (scope.inner+scope.outer)/2.0,
                 am = (a1+a2)/2.0;
             scope.p[0] = ctrl.polarToCartesian(scope.outer, a1);
