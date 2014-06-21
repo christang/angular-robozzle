@@ -27,9 +27,10 @@ angular.module('robozzleCanvas', [])
     };
   })
 
-  .directive('grid', function () {
+  .directive('grid', ['applyAndSet', function (applyAndSet) {
     return {
       type: 'svg',
+      scope: true,
       template: '<g ng-transclude />',
       restrict: 'E',
       replace: true,
@@ -44,14 +45,14 @@ angular.module('robozzleCanvas', [])
           return y * height + ( 2 * y + 1 ) * pad;
         };
       },
-      link: function (scoe, $element, $attrs, ctrl) {
-        ctrl.dx = $attrs.dx || 0;
-        ctrl.dy = $attrs.dy || 0;
+      link: function _linker(scope, $element, $attrs, ctrl) {
+        $attrs.$observe('dx', applyAndSet('dx', parseInt, 0, ctrl));
+        $attrs.$observe('dy', applyAndSet('dy', parseInt, 0, ctrl));
       }
     };
-  })
+  }])
 
-  .directive('tile', function () {
+  .directive('tile', ['applyAndSet', function (applyAndSet) {
     return {
       type: 'svg',
       templateUrl: 'views/partials/tile.svg',
@@ -59,29 +60,49 @@ angular.module('robozzleCanvas', [])
       replace: true,
       require: '^grid',
       scope: {
-        x: '@',
-        y: '@',
-        width: '@',
-        height: '@',
-        horizPad: '@',
-        verticalPad: '@',
         classes: '@',
         icon: '@'
       },
       link: function _linker(scope, $element, $attrs, ctrl) {
-        $attrs.$observe('posX', function __setX(newX) {
-          if (newX) {
-            scope.x = ctrl.coordOfX(newX, scope.width,
-                                        scope.horizPad);
-          }
-        });
-        $attrs.$observe('posY', function __setY(newY) {
-          if (newY) {
-            scope.y = ctrl.coordOfY(newY, scope.height,
-                                        scope.verticalPad);
-          }
-        });
+        // observers
+        $attrs.$observe('posX', applyAndSet('posX', parseInt, 0, scope));
+        $attrs.$observe('posY', applyAndSet('posY', parseInt, 0, scope));
+        $attrs.$observe('width', applyAndSet('width', parseInt, 1, scope));
+        $attrs.$observe('height', applyAndSet('height', parseInt, 1, scope));
+        $attrs.$observe('horizPad', applyAndSet('horizPad', parseInt, 0, scope));
+        $attrs.$observe('verticalPad', applyAndSet('verticalPad', parseInt, 0, scope));
+
+        // watchers
+        scope.$watch(
+          function __watcher() {
+            return [scope.posX, scope.width, scope.horizPad];
+          },
+          function __changed() {
+            scope.x = ctrl.coordOfX(scope.posX, scope.width, scope.horizPad);
+          }, true);
+
+        scope.$watch(
+          function __watcher() {
+            return [scope.posY, scope.height, scope.verticalPad];
+          },
+          function __changed() {
+            scope.y = ctrl.coordOfX(scope.posY, scope.height, scope.verticalPad);
+          }, true);
       }
+    };
+  }])
+
+  .value('applyAndSet', function (name, func, dfault) {
+    var objs = [];
+    for (var i=3; i<arguments.length; i++) { 
+      var obj = arguments[i];
+      objs.push(obj);
+      obj[name] = dfault;
+    }
+    return function __setObjs(newValue) {
+      _.each(objs, function __setObj(obj) { 
+        obj[name] = newValue ? func(newValue) : dfault; 
+      })
     };
   })
 
