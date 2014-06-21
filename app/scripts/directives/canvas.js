@@ -101,12 +101,19 @@ angular.module('robozzleCanvas', [])
       replace: true,
       transclude: true,
       controller: function _controller() {
-        this.polarToCartesian = function (radius, angleInDegrees) {
+        this.polarToCartesianRelative = function (radius, angleInDegrees) {
           var angleInRadians = angleInDegrees * Math.PI / 180.0;
-          var x = this.cx + radius * Math.cos(angleInRadians);
-          var y = this.cy + radius * Math.sin(angleInRadians);
+          var x = radius * Math.cos(angleInRadians);
+          var y = radius * Math.sin(angleInRadians);
           return {'x':x, 'y':y};
-        }     
+        };
+
+        this.polarToCartesian = function (radius, angleInDegrees, radialShift) {
+          var p = this.polarToCartesianRelative(radius, angleInDegrees);
+          p.x = p.x + this.cx + (radialShift ? radialShift.x : 0);
+          p.y = p.y + this.cy + (radialShift ? radialShift.y : 0);
+          return p;
+        };    
       },
       link: function _linker(scope, $element, $attrs, ctrl) {
         $attrs.$observe('n', applyAndSet('n', parseInt, 1, ctrl, scope));
@@ -136,9 +143,10 @@ angular.module('robozzleCanvas', [])
 
         // observers
         $attrs.$observe('a', applyAndSet('a', parseInt, 0, scope));
-        $attrs.$observe('rPad', applyAndSet('rPad', parseInt, 5, scope));
+        $attrs.$observe('rPad', applyAndSet('rPad', parseInt, 0, scope));
         $attrs.$observe('inner', applyAndSet('inner', parseFloat, 10, scope));
         $attrs.$observe('outer', applyAndSet('outer', parseFloat, 20, scope));
+        $attrs.$observe('rShift', applyAndSet('rShift', parseFloat, 5, scope));
 
         // watchers
         scope.$watch(
@@ -150,13 +158,14 @@ angular.module('robozzleCanvas', [])
             var sweep = 360.0 / ctrl.n,
                 a1 = scope.a * sweep + scope.rPad,
                 a2 = (scope.a+1) * sweep - scope.rPad,
+                am = (a1+a2)/2.0,
                 rm = (scope.inner+scope.outer)/2.0,
-                am = (a1+a2)/2.0;
-            scope.p[0] = ctrl.polarToCartesian(scope.outer, a1);
-            scope.p[1] = ctrl.polarToCartesian(scope.outer, a2);
-            scope.p[2] = ctrl.polarToCartesian(scope.inner, a2);
-            scope.p[3] = ctrl.polarToCartesian(scope.inner, a1);
-            scope.p[4] = ctrl.polarToCartesian(rm, am);
+                rs = ctrl.polarToCartesianRelative(scope.rShift, am);
+            scope.p[0] = ctrl.polarToCartesian(scope.outer, a1, rs);
+            scope.p[1] = ctrl.polarToCartesian(scope.outer, a2, rs);
+            scope.p[2] = ctrl.polarToCartesian(scope.inner, a2, rs);
+            scope.p[3] = ctrl.polarToCartesian(scope.inner, a1, rs);
+            scope.p[4] = ctrl.polarToCartesian(rm, am, rs);
             scope.tRot = am + 90;
             scope.isReflex = sweep > 180 ? 1 : 0;
           }, true);
