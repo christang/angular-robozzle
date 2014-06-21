@@ -11,5 +11,5 @@
         <feMergeNode in="SourceGraphic"/> 
       </feMerge>
     </filter>
-  <defs>
+  </defs>
 </svg>
