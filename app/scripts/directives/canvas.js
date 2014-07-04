@@ -113,7 +113,7 @@ angular.module('robozzleCanvas', [])
           p.x = p.x + this.cx + (radialShift ? radialShift.x : 0);
           p.y = p.y + this.cy + (radialShift ? radialShift.y : 0);
           return p;
-        };    
+        };
       },
       link: function _linker(scope, $element, $attrs, ctrl) {
         $attrs.$observe('n', applyAndSet('n', parseInt, 1, ctrl, scope));
@@ -121,7 +121,7 @@ angular.module('robozzleCanvas', [])
         $attrs.$observe('cy', applyAndSet('cy', parseInt, 0, ctrl));
         $attrs.$observe('da', applyAndSet('da', parseInt, 0, ctrl));
       }
-    }
+    };
   }])
 
   .directive('arc', ['applyAndSet', function (applyAndSet) {
@@ -170,21 +170,22 @@ angular.module('robozzleCanvas', [])
             scope.isReflex = sweep > 180 ? 1 : 0;
           }, true);
       }
-    }
+    };
   }])
 
   .value('applyAndSet', function (name, func, dfault) {
     var objs = [];
-    for (var i=3; i<arguments.length; i++) { 
+    for (var i=3; i<arguments.length; i++) {
       var obj = arguments[i];
       objs.push(obj);
       obj[name] = dfault;
     }
     return function __setObjs(newValue) {
-      _.each(objs, function __setObj(obj) { 
-        obj[name] = newValue ? func(newValue) : dfault; 
-      })
+      _.each(objs, function __setObj(obj) {
+        obj[name] = newValue ? func(newValue) : dfault;
+      });
     };
+
   })
 
   ;
