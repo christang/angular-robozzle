@@ -18,7 +18,7 @@
               v-pad="{{view.world.tile.verticalPad}}"
               classes="{{world.classAt(x,y)}}" 
               icon="{{world.iconAt(x,y)}}"
-              
+
               ng-repeat="x in range(world.maxX)" />
 
       </grid>
@@ -28,6 +28,11 @@
         <arc ng-repeat="i in range(4)" a="{{i}}"
              inner="30"
              outer="60"
+             icon="+"/>
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="70"
+             outer="100"
              icon="+"/>
 
       </polar>

@@ -151,13 +151,13 @@ angular.module('robozzleCanvas', [])
         // watchers
         scope.$watch(
           function __watcher() {
-            return [scope.a, scope.inner, scope.outer, scope.rPad];
+            return [scope.a, scope.inner, scope.outer, scope.rPad, ctrl.n];
           },
           function __changed() {
-            scope.a = scope.a % ctrl.n;
             var sweep = 360.0 / ctrl.n,
-                a1 = scope.a * sweep + scope.rPad,
-                a2 = (scope.a+1) * sweep - scope.rPad,
+                a = scope.a % ctrl.n,
+                a1 = a * sweep + scope.rPad,
+                a2 = (a+1) * sweep - scope.rPad,
                 am = (a1+a2)/2.0,
                 rm = (scope.inner+scope.outer)/2.0,
                 rs = ctrl.polarToCartesianRelative(scope.rShift, am);
