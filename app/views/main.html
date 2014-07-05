@@ -4,8 +4,10 @@
 
   <canvas ng-controller="MainCtrl">
 
-    <sframe transform="translate(100,2.5)">
-
+    <sframe ng-attr-transform="translate(
+                                {{view.world.offset.x}}, 
+                                {{view.world.offset.y}})">
+  
       <desc>Frame containing the World</desc>
 
       <grid ng-repeat="y in range(world.maxY)">
@@ -19,27 +21,16 @@
               classes="{{world.classAt(x,y)}}" 
               icon="{{world.iconAt(x,y)}}"
 
+              ng-click="toggleWorldCxtMenu($event)"
               ng-repeat="x in range(world.maxX)" />
 
       </grid>
 
-      <polar cx="100" cy="100" n="4">
-
-        <arc ng-repeat="i in range(4)" a="{{i}}"
-             inner="30"
-             outer="60"
-             icon="+"/>
-
-        <arc ng-repeat="i in range(4)" a="{{i}}"
-             inner="70"
-             outer="100"
-             icon="+"/>
-
-      </polar>
-
     </sframe>
 
-    <sframe transform="translate(175,325)">
+    <sframe ng-attr-transform="translate(
+                                {{view.program.offset.x}}, 
+                                {{view.program.offset.y}})">
 
       <desc>Frame containing the Program</desc>
 
@@ -53,10 +44,41 @@
               v-pad="{{view.program.tile.verticalPad}}"
               classes="{{program.classAt(fn,pos)}}" 
               icon="{{program.iconAt(fn,pos)}}"
-              
+
+              ng-click="toggleProgramCxtMenu($event)"
               ng-repeat="pos in range(program.functions[fn].length)" />
 
     </sframe>
+
+      <polar ng-if="worldCxtMenu" 
+             cx="{{worldCxtMenu.cx}}" cy="{{worldCxtMenu.cy}}" n="4">
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="30"
+             outer="60"
+             icon="+"/>
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="70"
+             outer="100"
+             icon="+"/>
+
+      </polar>
+
+      <polar ng-if="programCxtMenu" 
+             cx="{{programCxtMenu.cx}}" cy="{{programCxtMenu.cy}}" n="4">
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="30"
+             outer="60"
+             icon="+"/>
+
+        <arc ng-repeat="i in range(4)" a="{{i}}"
+             inner="70"
+             outer="100"
+             icon="+"/>
+
+      </polar>
 
   </canvas>
 

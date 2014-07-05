@@ -10,6 +10,10 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
       function init() {
         $scope.view = {
           world: {
+            offset: {
+              x: 100,
+              y: 2.5
+            },
             tile: {
               height: 36,
               width: 36,
@@ -18,6 +22,10 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
             }
           },
           program: {
+            offset: {
+              x: 175,
+              y: 325
+            },
             tile: {
               height: 24,
               width: 24,
@@ -136,12 +144,35 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
 
       }
 
+      function initContextMenus() {
+
+        function toggleCxtMenu(scope, menu) {
+          return function (event) {
+            if (!scope[menu]) {
+              var cx = event.offsetX,
+                  cy = event.offsetY;
+              scope[menu] = {'cx': cx, 'cy': cy};
+            } else {
+              scope[menu] = false;
+            }
+          };
+        }
+
+        $scope.worldCxtMenu = false;
+        $scope.toggleWorldCxtMenu = toggleCxtMenu($scope, 'worldCxtMenu');
+
+        $scope.programCxtMenu = false;
+        $scope.toggleProgramCxtMenu = toggleCxtMenu($scope, 'programCxtMenu');
+
+      }
+
       init();
       initWorld();
       initWorldHelpers();
       initProgram();
       initProgramHelpers();
       initStepper();
+      initContextMenus();
 
     }
   ]);
