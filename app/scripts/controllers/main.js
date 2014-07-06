@@ -146,11 +146,12 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
 
       function initContextMenus() {
 
-        function toggleCxtMenu(scope, menu) {
+        function toggleCxtMenu(scope, menu, offset) {
           return function (event) {
             if (!scope[menu]) {
-              var cx = event.offsetX,
-                  cy = event.offsetY;
+              var box = event.target.getBBox(),
+                  cx = box.x + box.width/2 + offset.x,
+                  cy = box.y + box.height/2 + offset.y;
               scope[menu] = {'cx': cx, 'cy': cy};
             } else {
               scope[menu] = false;
@@ -159,10 +160,12 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
         }
 
         $scope.worldCxtMenu = false;
-        $scope.toggleWorldCxtMenu = toggleCxtMenu($scope, 'worldCxtMenu');
+        $scope.toggleWorldCxtMenu = toggleCxtMenu($scope, 'worldCxtMenu',
+                                                  $scope.view.world.offset);
 
         $scope.programCxtMenu = false;
-        $scope.toggleProgramCxtMenu = toggleCxtMenu($scope, 'programCxtMenu');
+        $scope.toggleProgramCxtMenu = toggleCxtMenu($scope, 'programCxtMenu',
+                                                    $scope.view.program.offset);
 
       }
 
