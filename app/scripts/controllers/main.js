@@ -146,8 +146,22 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
 
       function initContextMenus() {
 
+        function findElementWith(element) {
+          var attrs = Array.prototype.slice.call(arguments, 1);
+          while (element) {
+            if (_.all(attrs, function (a) { return element.hasAttribute(a); })) {
+              return element;
+            }
+            element = element.parentNode;
+          }
+          return null;
+        }
+
         function toggleCxtMenu(scope, menu, offset) {
           return function (event) {
+            var cell = findElementWith(event.target, 'pos-x', 'pos-y'),
+                posX = cell.getAttribute('pos-x'),
+                posY = cell.getAttribute('pos-y');
             if (!scope[menu]) {
               var box = event.target.getBBox(),
                   cx = box.x + box.width/2 + offset.x,
@@ -156,6 +170,8 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
             } else {
               scope[menu] = false;
             }
+            // todo(clt)
+            console.log(posX, posY);
           };
         }
 
