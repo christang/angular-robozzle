@@ -156,6 +156,7 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
 
         function setProgram(name, attr) {
           return function (c, r) {
+            $scope.programCxtMenu = false;
             $scope.programBuilder[name](r, c, attr);
             $scope.program = $scope.programBuilder.build();
             initProgramHelpers();
@@ -165,17 +166,18 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
 
         function setWorld(name, attr, attr2) {
           return function (x, y) {
+            $scope.worldCxtMenu = false;
             $scope.worldBuilder[name](x, y, attr, attr2);
             $scope.world = $scope.worldBuilder.build();
             initWorldHelpers();
             initStepper();
-          }
+          };
         }
 
         function findElementWith(element) {
           var attrs = Array.prototype.slice.call(arguments, 1);
           while (element) {
-            if (_.all(attrs, function (a) { return element.hasAttribute(a); })) {
+            if (_.all(attrs, element.hasAttribute)) {
               return element;
             }
             element = element.parentNode;

@@ -308,7 +308,6 @@ angular.module('robozzleObjects', [])
         }
       },
       advanceCursor: function () {
-
         // don't move unless safe
         if (!this.safe) { return this; }
 
