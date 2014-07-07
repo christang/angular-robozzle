@@ -382,11 +382,9 @@ angular.module('robozzleObjects', [])
   .factory('ProgramEditor', ['Configs', 'Color', 'Op', 'Program', 'Step', 'assert', function __classFactory(
     Configs, Color, Op, Program, Step, assert) {
 
-    var mem;
-
     function ProgramEditor () {
+      var mem = this.mem = [];
       assert(arguments.length <= Configs.maxFuncs);
-      mem = [];
       _.each(arguments, function (val) {
         mem.push(fill(val));
       });
@@ -401,6 +399,7 @@ angular.module('robozzleObjects', [])
 
     ProgramEditor.prototype = {
       at: function (r, c, newOp, newColor) {
+        var mem = this.mem;
         // two-way binding
         assert(r >= 0 && r < mem.length);
         assert(c >= 0 && c < mem[r].length);
@@ -413,18 +412,21 @@ angular.module('robozzleObjects', [])
         return mem[r][c];
       },
       op: function (r, c, newOp) {
+        var mem = this.mem;
         assert(r >= 0 && r < mem.length);
         assert(c >= 0 && c < mem[r].length);
         mem[r][c].op = newOp;
         return this;
       },
       color: function (r, c, newColor) {
+        var mem = this.mem;
         assert(r >= 0 && r < mem.length);
         assert(c >= 0 && c < mem[r].length);
         mem[r][c].color = newColor;
         return this;
       },
       fns: function (mLength) {
+        var mem = this.mem;
         // return the length of program
         if (!mLength) {
           return mem.length;
@@ -432,7 +434,7 @@ angular.module('robozzleObjects', [])
         // or set its length
         assert(mLength >= 0 && mLength <= Configs.maxFuncs);
         if (mLength < mem.length) {
-          mem = mem.slice(0, mLength);
+          mem = this.mem = mem.slice(0, mLength);
         } else if (mLength > mem.length) {
           _.each(_.range(mLength - mem.length), function () {
             mem.push([]);
@@ -441,6 +443,7 @@ angular.module('robozzleObjects', [])
         return this;
       },
       steps: function (r, rLength) {
+        var mem = this.mem;
         // return the length of function
         assert(r >= 0 && r < mem.length);
         if (!rLength) {
@@ -458,6 +461,7 @@ angular.module('robozzleObjects', [])
         return this;
       },
       build: function () {
+        var mem = this.mem;
         var program = new Program(_.map(mem, function (fn) {
           return fn.length;
         }));
