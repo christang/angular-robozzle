@@ -383,10 +383,11 @@ angular.module('robozzleObjects', [])
   .factory('ProgramEditor', ['Configs', 'Color', 'Op', 'Program', 'Step', 'assert', function __classFactory(
     Configs, Color, Op, Program, Step, assert) {
 
-    var mem = [];
+    var mem;
 
     function ProgramEditor () {
       assert(arguments.length <= Configs.maxFuncs);
+      mem = [];
       _.each(arguments, function (val) {
         mem.push(fill(val));
       });

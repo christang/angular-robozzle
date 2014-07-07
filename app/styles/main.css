@@ -115,6 +115,22 @@ rect.tile-green {
   fill: #66FF33;
 }
 
+path.tile-clear {
+  fill: #DDDDDD;
+}
+
+path.tile-red {
+  fill: #FF0066;
+}
+
+path.tile-blue {
+  fill: #0099FF;
+}
+
+path.tile-green {
+  fill: #66FF33;
+}
+
 rect.tile-nop
 rect.tile-void {
   fill: #222222;

@@ -32,6 +32,12 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
               horizPad: 1,
               verticalPad: 1
             }
+          },
+          menu: {
+            eye: 15,
+            arcPad: 0,
+            arcWidth: 25,
+            arcShift: 2
           }
         };
       }
@@ -44,6 +50,7 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
           .star(5, 2)
           .heading(Heading.UP);
 
+        $scope.worldBuilder = builder;
         $scope.world = builder.build();
       }
 
@@ -53,6 +60,7 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
           .op(0, 1, Op.R90)
           .op(0, 2, Op.F1);
 
+        $scope.programBuilder = builder;
         $scope.program = builder.build();
       }
 
@@ -157,7 +165,7 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
           return null;
         }
 
-        function toggleCxtMenu(scope, menu, offset) {
+        function toggleCxtMenu(scope, menu, offset, config) {
           return function (event) {
             var cell = findElementWith(event.target, 'pos-x', 'pos-y'),
                 posX = cell.getAttribute('pos-x'),
@@ -166,22 +174,78 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
               var box = event.target.getBBox(),
                   cx = box.x + box.width/2 + offset.x,
                   cy = box.y + box.height/2 + offset.y;
-              scope[menu] = {'cx': cx, 'cy': cy};
+              scope[menu] = {'cx': cx, 'cy': cy, 'x': posX, 'y': posY, 'menus': config};
             } else {
               scope[menu] = false;
             }
-            // todo(clt)
-            console.log(posX, posY);
           };
         }
 
+        function worldCxtMenuBuilder() {
+          var config = [];
+          return config;
+        }
+
+        function programCxtMenuBuilder() {
+          function setColor(color) {
+            return function (c, r) {
+              $scope.programBuilder.color(r, c, color);
+              $scope.program = $scope.programBuilder.build();
+              initProgramHelpers();
+              initStepper();
+            };
+          }
+
+          function setOp(op) {
+            return function (c, r) {
+              $scope.programBuilder.op(r, c, op);
+              $scope.program = $scope.programBuilder.build();
+              initProgramHelpers();
+              initStepper();
+            }
+          }
+
+          var colorStyles = StyleMap.classes.colors,
+              colorIcon = '',
+              opStyle = colorStyles[Color.CLEAR],
+              opIcons = StyleMap.icons.ops,
+              noOpStyle = StyleMap.classes.steps[Op.NOP],
+              cellColor = [
+                [colorStyles[Color.CLEAR].join(''),colorIcon,setColor(Color.CLEAR)],
+                [colorStyles[Color.RED].join(''),colorIcon,setColor(Color.RED)],
+                [colorStyles[Color.BLUE].join(''),colorIcon,setColor(Color.BLUE)],
+                [colorStyles[Color.GREEN].join(''),colorIcon,setColor(Color.GREEN)]
+              ],
+              cellFn = [
+                [opStyle.join(''),opIcons[Op.F1][0],setOp(Op.F1)],
+                [opStyle.join(''),opIcons[Op.F2][0],setOp(Op.F2)],
+                [opStyle.join(''),opIcons[Op.F3][0],setOp(Op.F3)],
+                [opStyle.join(''),opIcons[Op.F4][0],setOp(Op.F4)],
+                [opStyle.join(''),opIcons[Op.F5][0],setOp(Op.F5)]
+              ],
+              cellOp = [
+                [noOpStyle.join(''),opIcons[Op.NOP][0],setOp(Op.NOP)],
+                [opStyle.join(''),opIcons[Op.FWD][0],setOp(Op.FWD)],
+                [opStyle.join(''),opIcons[Op.L90][0],setOp(Op.L90)],
+                [opStyle.join(''),opIcons[Op.R90][0],setOp(Op.R90)]
+              ],
+              config = [[],cellColor, cellFn, cellOp,[],[],[],[],[],[]];
+
+          return config;
+        }
+
+        var worldCxtMenuConfig = worldCxtMenuBuilder(),
+            programCxtMenuConfig = programCxtMenuBuilder();
+
         $scope.worldCxtMenu = false;
         $scope.toggleWorldCxtMenu = toggleCxtMenu($scope, 'worldCxtMenu',
-                                                  $scope.view.world.offset);
+                                                  $scope.view.world.offset,
+                                                  worldCxtMenuConfig);
 
         $scope.programCxtMenu = false;
         $scope.toggleProgramCxtMenu = toggleCxtMenu($scope, 'programCxtMenu',
-                                                    $scope.view.program.offset);
+                                                    $scope.view.program.offset,
+                                                    programCxtMenuConfig);
 
       }
 

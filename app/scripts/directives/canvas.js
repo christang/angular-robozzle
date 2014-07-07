@@ -166,7 +166,7 @@ angular.module('robozzleCanvas', [])
             scope.p[2] = ctrl.polarToCartesian(scope.inner, a2, rs);
             scope.p[3] = ctrl.polarToCartesian(scope.inner, a1, rs);
             scope.p[4] = ctrl.polarToCartesian(rm, am, rs);
-            scope.tRot = am + 90;
+            scope.tRot = am + (am < 180 ? -1 : 1) * 90;
             scope.isReflex = sweep > 180 ? 1 : 0;
           }, true);
       }

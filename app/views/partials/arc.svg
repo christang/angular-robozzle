@@ -4,7 +4,7 @@
                    L{{ p[2].x }},{{ p[2].y }}
                    A{{ inner }},{{ inner }} 0 {{isReflex}},0 {{ p[3].x }},{{ p[3].y }}
                    z" 
-        style="stroke:#660000; fill:#660000;">
+        class="{{classes}}">
   </path>
   <text class="{{classes}}"
         text-anchor="middle" 

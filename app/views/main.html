@@ -66,17 +66,23 @@
       </polar>
 
       <polar ng-if="programCxtMenu" 
-             cx="{{programCxtMenu.cx}}" cy="{{programCxtMenu.cy}}" n="4">
+             cx="{{programCxtMenu.cx}}" 
+             cy="{{programCxtMenu.cy}}" 
+             n="{{programCxtMenu.menus.length}}">
 
-        <arc ng-repeat="i in range(4)" a="{{i}}"
-             inner="30"
-             outer="60"
-             icon="+"/>
+        <sframe ng-repeat="a in range(programCxtMenu.menus.length)">
 
-        <arc ng-repeat="i in range(4)" a="{{i}}"
-             inner="70"
-             outer="100"
-             icon="+"/>
+          <arc a="{{a}}"
+               r-pad="{{view.menu.arcPad}}"
+               inner="{{view.menu.eye + r * view.menu.arcWidth + r * view.menu.arcShift }}"
+               outer="{{view.menu.eye + (r+1) * view.menu.arcWidth + r * view.menu.arcShift }}"
+               classes="{{programCxtMenu.menus[a][r][0]}}"
+               icon="{{programCxtMenu.menus[a][r][1]}}"
+
+               ng-click="programCxtMenu.menus[a][r][2](programCxtMenu.x, programCxtMenu.y)"
+               ng-repeat="r in range(programCxtMenu.menus[a].length)" />
+
+        </sframe>
 
       </polar>
 
