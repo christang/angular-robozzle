@@ -175,9 +175,10 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
         }
 
         function findElementWith(element) {
-          var attrs = Array.prototype.slice.call(arguments, 1);
+          var attrs = Array.prototype.slice.call(arguments, 1),
+              hasAttribute = function (a) { return element.hasAttribute(a); };
           while (element) {
-            if (_.all(attrs, element.hasAttribute)) {
+            if (_.all(attrs, hasAttribute)) {
               return element;
             }
             element = element.parentNode;
