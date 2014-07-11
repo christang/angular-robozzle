@@ -223,6 +223,24 @@ angular.module('robozzleObjects', [])
         this.H = parseInt(h);
         return this;
       },
+      height: function(h) {
+        if (!h) {
+          // get current value of maxY
+          return this.maxY;
+        }
+        // OR set new value of maxY
+        this.maxY = h;
+        return this;
+      },
+      width: function(w) {
+        if (!w) {
+          // get current value of maxX
+          return this.maxX;
+        }
+        // OR set new value of maxX
+        this.maxX = w;
+        return this;
+      },
       build: function () {
         assertWellDefined(this);
         var world = new World(this.maxX, this.maxY, this.H, this.X, this.Y);

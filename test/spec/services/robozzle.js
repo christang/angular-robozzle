@@ -193,6 +193,15 @@ describe('Service: robozzle', function () {
       expect(world.at(randX, randY).hasStar).toBe(false);
     });
 
+    it('should get/set a width/height of the world', function() {
+      expect(someBuilder.width()).toEqual(maxX);
+      someBuilder.width(maxX + 1);
+      expect(someBuilder.width()).toEqual(maxX + 1);
+      expect(someBuilder.height()).toEqual(maxY + 1);
+      someBuilder.height(maxY + 2);
+      expect(someBuilder.height()).toEqual(maxY + 2);
+    });
+
     it('should serialize to/deserialize from json', function() {
       var json = someBuilder.toJson(),
           builder = WorldEditor.fromJson(json);
