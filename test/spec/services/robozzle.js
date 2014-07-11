@@ -193,6 +193,14 @@ describe('Service: robozzle', function () {
       expect(world.at(randX, randY).hasStar).toBe(false);
     });
 
+    it('should serialize to/deserialize from json', function() {
+      var json = someBuilder.toJson(),
+          builder = WorldEditor.fromJson(json);
+      expect(builder.maxX).toEqual(someBuilder.maxX);
+      expect(builder.maxY).toEqual(someBuilder.maxY);
+      expect(builder.tiles).toEqual(someBuilder.tiles);
+      expect(builder.stars).toEqual(someBuilder.stars);
+    });
   });
 
   describe('Factory: World', function () {
@@ -385,6 +393,11 @@ describe('Service: robozzle', function () {
       expect(function() { someEditor.at(2,0); }).toThrow('Assertion failed');
     });
 
+    it('should serialize to/deserialize from json', function() {
+      var json = someEditor.toJson(),
+          editor = ProgramEditor.fromJson(json);
+      expect(editor.mem).toEqual(someEditor.mem);
+    });
   });
 
   describe('Factory: Program', function () {

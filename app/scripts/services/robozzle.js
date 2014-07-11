@@ -261,7 +261,25 @@ angular.module('robozzleObjects', [])
         };
 
         return world;
+      },
+      toJson: function () {
+        var obj = {
+          maxX: this.maxX,
+          maxY: this.maxY,
+          tiles: this.tiles,
+          stars: this.stars
+        };
+        return JSON.stringify(obj);
       }
+    };
+
+    WorldEditor.fromJson = function (json) {
+      var editor = new WorldEditor(),
+          obj = JSON.parse(json);
+      for (var key in obj) {
+        editor[key] = obj[key];
+      }
+      return editor;
     };
 
     return WorldEditor;
@@ -482,7 +500,22 @@ angular.module('robozzleObjects', [])
         };
 
         return program;
+      },
+      toJson: function () {
+        var obj = {
+          mem: this.mem
+        };
+        return JSON.stringify(obj);
       }
+    };
+
+    ProgramEditor.fromJson = function (json) {
+      var obj = JSON.parse(json),
+          editor = new ProgramEditor();
+      for (var key in obj) {
+        editor[key] = obj[key];
+      }
+      return editor;
     };
 
     return ProgramEditor;
