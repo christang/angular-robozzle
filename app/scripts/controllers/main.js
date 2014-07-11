@@ -210,22 +210,19 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
               shipStyle = colorStyles[Color.CLEAR],
               starStyle = colorStyles[Color.CLEAR],
               headingIcons = StyleMap.icons.headings,
-              cellColor = [
-                [colorStyles[Color.CLEAR].join(''),colorIcon,setWorld('tile',Color.CLEAR)],
-                [colorStyles[Color.RED].join(''),colorIcon,setWorld('tile',Color.RED)],
-                [colorStyles[Color.BLUE].join(''),colorIcon,setWorld('tile',Color.BLUE)],
-                [colorStyles[Color.GREEN].join(''),colorIcon,setWorld('tile',Color.GREEN)]
-              ],
-              cellHeading = [
-                [shipStyle.join(''),headingIcons[Heading.UP][0],setWorld('ship',false,Heading.UP)],
-                [shipStyle.join(''),headingIcons[Heading.DOWN][0],setWorld('ship',false,Heading.DOWN)],
-                [shipStyle.join(''),headingIcons[Heading.LEFT][0],setWorld('ship',false,Heading.LEFT)],
-                [shipStyle.join(''),headingIcons[Heading.RIGHT][0],setWorld('ship',false,Heading.RIGHT)]
-              ],
-              cellTile = [
-                [boardStyles[Material.VOID].join(''),'',setWorld('unsetTile')],
-                [starStyle.join(''),boardIcons[Material.STAR][0],setWorld('star')]
-              ],
+              cellColor = [[colorStyles[Color.CLEAR].join(''),colorIcon,setWorld('tile',Color.CLEAR)],
+                           [colorStyles[Color.RED].join(''),colorIcon,setWorld('tile',Color.RED)],
+                           [colorStyles[Color.BLUE].join(''),colorIcon,setWorld('tile',Color.BLUE)],
+                           [colorStyles[Color.GREEN].join(''),colorIcon,setWorld('tile',Color.GREEN)]
+                          ],
+              cellHeading = [[shipStyle.join(''),headingIcons[Heading.UP][0],setWorld('ship',false,Heading.UP)],
+                             [shipStyle.join(''),headingIcons[Heading.DOWN][0],setWorld('ship',false,Heading.DOWN)],
+                             [shipStyle.join(''),headingIcons[Heading.LEFT][0],setWorld('ship',false,Heading.LEFT)],
+                             [shipStyle.join(''),headingIcons[Heading.RIGHT][0],setWorld('ship',false,Heading.RIGHT)]
+                            ],
+              cellTile = [[boardStyles[Material.VOID].join(''),'',setWorld('unsetTile')],
+                          [starStyle.join(''),boardIcons[Material.STAR][0],setWorld('star')]
+                         ],
               config = [[],cellColor,cellHeading,cellTile,[],[],[],[],[],[]];
           return config;
         }
@@ -236,25 +233,22 @@ angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
               opStyle = colorStyles[Color.CLEAR],
               opIcons = StyleMap.icons.ops,
               noOpStyle = StyleMap.classes.steps[Op.NOP],
-              cellColor = [
-                [colorStyles[Color.CLEAR].join(''),colorIcon,setProgram('color',Color.CLEAR)],
-                [colorStyles[Color.RED].join(''),colorIcon,setProgram('color',Color.RED)],
-                [colorStyles[Color.BLUE].join(''),colorIcon,setProgram('color',Color.BLUE)],
-                [colorStyles[Color.GREEN].join(''),colorIcon,setProgram('color',Color.GREEN)]
-              ],
-              cellFn = [
-                [opStyle.join(''),opIcons[Op.F1][0],setProgram('op',Op.F1)],
-                [opStyle.join(''),opIcons[Op.F2][0],setProgram('op',Op.F2)],
-                [opStyle.join(''),opIcons[Op.F3][0],setProgram('op',Op.F3)],
-                [opStyle.join(''),opIcons[Op.F4][0],setProgram('op',Op.F4)],
-                [opStyle.join(''),opIcons[Op.F5][0],setProgram('op',Op.F5)]
-              ],
-              cellOp = [
-                [noOpStyle.join(''),opIcons[Op.NOP][0],setProgram('op',Op.NOP)],
-                [opStyle.join(''),opIcons[Op.FWD][0],setProgram('op',Op.FWD)],
-                [opStyle.join(''),opIcons[Op.L90][0],setProgram('op',Op.L90)],
-                [opStyle.join(''),opIcons[Op.R90][0],setProgram('op',Op.R90)]
-              ],
+              cellColor = [[colorStyles[Color.CLEAR].join(''),colorIcon,setProgram('color',Color.CLEAR)],
+                           [colorStyles[Color.RED].join(''),colorIcon,setProgram('color',Color.RED)],
+                           [colorStyles[Color.BLUE].join(''),colorIcon,setProgram('color',Color.BLUE)],
+                           [colorStyles[Color.GREEN].join(''),colorIcon,setProgram('color',Color.GREEN)]
+                          ],
+              cellFn = [[opStyle.join(''),opIcons[Op.F1][0],setProgram('op',Op.F1)],
+                        [opStyle.join(''),opIcons[Op.F2][0],setProgram('op',Op.F2)],
+                        [opStyle.join(''),opIcons[Op.F3][0],setProgram('op',Op.F3)],
+                        [opStyle.join(''),opIcons[Op.F4][0],setProgram('op',Op.F4)],
+                        [opStyle.join(''),opIcons[Op.F5][0],setProgram('op',Op.F5)]
+                       ],
+              cellOp = [[noOpStyle.join(''),opIcons[Op.NOP][0],setProgram('op',Op.NOP)],
+                        [opStyle.join(''),opIcons[Op.FWD][0],setProgram('op',Op.FWD)],
+                        [opStyle.join(''),opIcons[Op.L90][0],setProgram('op',Op.L90)],
+                        [opStyle.join(''),opIcons[Op.R90][0],setProgram('op',Op.R90)]
+                       ],
               config = [[],cellColor, cellFn, cellOp,[],[],[],[],[],[]];
 
           return config;
