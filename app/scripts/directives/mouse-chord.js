@@ -2,7 +2,7 @@
 
 angular.module('robozzleApp')
 
-  .directive('mouseChord', [function () {
+  .directive('mouseChord', ['$parse', function ($parse) {
     return {
       restrict: 'A',
       link: function postLink(scope, $element, $attrs) {
@@ -15,7 +15,11 @@ angular.module('robozzleApp')
         }
 
         function setHandler(newHandler) {
-          handler = scope[newHandler] || angular.noop;
+          if (newHandler) {
+            handler = $parse(newHandler);
+          } else {
+            handler = angular.noop;
+          }
         }
 
         function reset() {
@@ -24,8 +28,12 @@ angular.module('robozzleApp')
         }
 
         function update(event) {
+          var local = {
+            '$dx': event.clientX - origin.x,
+            '$dy': event.clientY - origin.y 
+          };
           scope.$apply(function () {
-            handler(event.clientX - origin.x, event.clientY - origin.y);
+            handler(scope, local);
           });
         }
 
