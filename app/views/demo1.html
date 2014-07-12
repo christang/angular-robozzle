@@ -1,0 +1,21 @@
+<svg mouse-chord 
+     on-displacement="dx=$dx; dy=$dy; o=1.0"
+     on-release="fadeout(0.5)" 
+     height="600" width="800">
+
+  <rect x="15" y="0" rx="5" ry="5"
+        ng-attr-width="{{abs(dx)}}" height="10"
+        ng-attr-style="fill-opacity:{{o}};
+                       {{neg(dx)?'fill:red':'fill:black'}}">
+  </rect>
+
+  <rect x="0" y="15" rx="5" ry="5" 
+        width="10" ng-attr-height="{{abs(dy)}}"
+        ng-attr-style="fill-opacity:{{o}};
+                       {{neg(dy)?'fill:red':'fill:black'}}">
+  </rect>
+
+</svg>
+
+<br/>
+{{dx}} {{dy}}

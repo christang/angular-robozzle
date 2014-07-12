@@ -1,8 +1,12 @@
 'use strict';
 
 angular.module('robozzleApp')
-  .controller('PuzzleCtrl', ['$scope',
-    function ($scope) {
+  .controller('PuzzleCtrl', ['$scope', '$interval',
+    function ($scope, $interval) {
+
+      $scope.max = Math.max;
+      $scope.abs = Math.abs;
+      $scope.neg = function (x) { return x && x<0; };
 
       $scope.puzzle = {
         width: 10,
@@ -17,6 +21,16 @@ angular.module('robozzleApp')
         }
       }
 
+      $scope.fadeout = function (secs) {
+        var stopUpdate;
+        function updateOpacity() {
+          $scope.o -= 0.05;
+          if ($scope.o < 0.01) { $scope.o = 0; }
+        }
+        stopUpdate = $interval(updateOpacity, 25.0*secs, 20);
+      };
+
+      /*
       $scope.$watch(
         'puzzle.width',
         function __changeWorld(width) {
@@ -45,5 +59,6 @@ angular.module('robozzleApp')
           updateSteps();
           $scope.program = $scope.programBuilder.build();
         }, true);
+      */
 
     }]);
