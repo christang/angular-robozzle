@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('robozzleWidgets', ['robozzleObjects'])
+angular.module('robozzleApp')
 
   .factory('StyleMap', [
     'Op', 'Color', 'Heading', 'Material',

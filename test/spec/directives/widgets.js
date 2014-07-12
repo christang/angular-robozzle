@@ -3,7 +3,7 @@
 describe('Directive: widgets', function() {
   
   // load the service's module
-  beforeEach(module('robozzleWidgets'));
+  beforeEach(module('robozzleApp'));
 
   var StyleMap;
 

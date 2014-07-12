@@ -3,7 +3,7 @@
 describe('Service: robozzle', function () {
 
   // load the service's module
-  beforeEach(module('robozzleObjects'));
+  beforeEach(module('robozzleApp'));
 
   var Op, Color, Heading, Material;
 

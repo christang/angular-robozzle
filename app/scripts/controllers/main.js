@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('robozzleMain', ['robozzleObjects', 'robozzleWidgets'])
+angular.module('robozzleApp')
   .controller('MainCtrl', [
     '$scope', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
     function ($scope, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {

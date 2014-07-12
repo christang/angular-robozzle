@@ -3,7 +3,7 @@
 describe('Directive: mouseChord', function () {
 
   // load the directive's module
-  beforeEach(module('robozzleApp'));
+  beforeEach(module('mouseUI'));
 
   var element,
     scope;

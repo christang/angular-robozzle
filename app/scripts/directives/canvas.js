@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('robozzleCanvas', [])
+angular.module('robozzleApp')
 
   .directive('addShadows', function () {
     return {

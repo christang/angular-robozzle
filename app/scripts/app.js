@@ -6,9 +6,7 @@ angular
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'robozzleObjects',
-    'robozzleCanvas',
-    'robozzleMain'
+    'mouseUI'
   ])
   .config(function ($routeProvider) {
     $routeProvider

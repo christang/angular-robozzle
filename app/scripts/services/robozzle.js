@@ -4,7 +4,7 @@
 // use either the Factory() of the Value() method. I prefer
 // the Factory since it allows for dependency injection.
 
-angular.module('robozzleObjects', [])
+angular.module('robozzleApp')
 
   .value('assert', function (assertion, message) {
     if (!assertion) {

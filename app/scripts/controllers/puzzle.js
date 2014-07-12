@@ -30,7 +30,6 @@ angular.module('robozzleApp')
         stopUpdate = $interval(updateOpacity, 25.0*secs, 20);
       };
 
-      /*
       $scope.$watch(
         'puzzle.width',
         function __changeWorld(width) {
@@ -59,6 +58,5 @@ angular.module('robozzleApp')
           updateSteps();
           $scope.program = $scope.programBuilder.build();
         }, true);
-      */
 
     }]);

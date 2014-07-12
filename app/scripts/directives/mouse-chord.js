@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('robozzleApp')
+angular.module('mouseUI', [])
 
   .directive('mouseChord', ['$parse', function ($parse) {
     return {
