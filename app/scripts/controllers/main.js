@@ -6,7 +6,7 @@ angular.module('robozzleApp')
 
     port: {
       width: 600,
-      height: 600
+      height: 580
     },
 
     world: {

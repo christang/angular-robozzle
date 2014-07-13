@@ -151,6 +151,7 @@ text.tile-star {
 }
 
 .overlay-svg {
+  font-size: 21px;
   text-align: center; 
   margin-top: -350px; 
   -khtml-user-select: none;

@@ -95,17 +95,31 @@
   </canvas>
   
   <div ng-show="setPuzzle">
-    Width: {{puzzle.width}}
-    <div ui-slider min="3" max="15" step="2" ng-model="puzzle.width"></div>
-    Height: {{puzzle.height}}
-    <div ui-slider min="3" max="11" step="2" ng-model="puzzle.height"></div>
-    <div ng-repeat="i in range(5)"> 
-      Function {{i+1}}: {{puzzle.steps[i]}}
-      <div ui-slider min="0" max="10" ng-model="puzzle.steps[i]"></div>
+    <div class="row">
+      <div class="col-md-1" />
+      <div class="col-md-5">
+        {{puzzle.width}} tiles wide
+        <div ui-slider min="3" max="15" step="2" ng-model="puzzle.width"/>
+      </div>
+      <div class="col-md-5">
+        {{puzzle.height}} tiles high
+        <div ui-slider min="3" max="11" step="2" ng-model="puzzle.height"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-1" />
+      <div class="col-md-2" ng-repeat="i in range(5)"> 
+        F{{i+1}}: {{puzzle.steps[i]}}
+        <div ui-slider min="0" max="10" ng-model="puzzle.steps[i]"></div>
+      </div>
     </div>
   </div>
 
-  <button class="btn btn-default" ng-click="setPuzzle = !setPuzzle">Edit</button>  
-  <button class="btn btn-default" ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">Step</button>
+  <br/>
+
+  <div class="row">
+    <button class="btn btn-default" ng-click="setPuzzle = !setPuzzle">Edit</button>  
+    <button class="btn btn-default" ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">Step</button>
+  </div>
 
 </div>
