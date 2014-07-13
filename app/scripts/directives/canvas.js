@@ -10,7 +10,7 @@ angular.module('robozzleApp')
 
   .directive('canvas', function () {
     return {
-      template: '<svg height="600" ng-transclude />',
+      template: '<svg ng-attr-width="{{view.port.width}}" ng-attr-height="{{view.port.height}}" ng-transclude />',
       restrict: 'E',
       replace: true,
       transclude: true

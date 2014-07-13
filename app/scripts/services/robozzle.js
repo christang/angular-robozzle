@@ -207,7 +207,7 @@ angular.module('robozzleApp')
         var t = [x,y].join(':');
         this.X = parseInt(x);
         this.Y = parseInt(y);
-        this.H = h || this.H || Heading.UP;
+        this.H = h === undefined ? this.H || Heading.UP : h;
         this.tiles[t] = c || this.tiles[t] || Color.CLEAR;  // adding a ship on a void changes it to tile
         delete(this.stars[t]);  // adding a ship on a star unsets it
         return this;
@@ -486,7 +486,7 @@ angular.module('robozzleApp')
           return mem[r].length;
         }
         // or set its length
-        assert(rLength >= 0 && rLength < Configs.maxStepsPerFunc);
+        assert(rLength >= 0 && rLength <= Configs.maxStepsPerFunc);
         if (rLength < mem[r].length) {
           mem[r] = mem[r].slice(0, rLength);
         } else if (rLength > mem[r].length) {

@@ -6,7 +6,8 @@ angular
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'mouseUI'
+    'mouseUI',
+    'ui.slider'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -16,7 +17,7 @@ angular
       })
       .when('/demo1', {
         templateUrl: 'views/demo1.html',
-        controller: 'PuzzleCtrl'
+        controller: 'MainCtrl'
       })
       .otherwise({
         redirectTo: '/'

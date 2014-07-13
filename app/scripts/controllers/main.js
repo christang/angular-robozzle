@@ -1,67 +1,96 @@
 'use strict';
 
 angular.module('robozzleApp')
+
+  .value('ViewConfigs', {
+
+    port: {
+      width: 600,
+      height: 600
+    },
+
+    world: {
+      offset: {
+        x: 100,
+        y: 2.5
+      },
+      tile: {
+        height: 36,
+        width: 36,
+        horizPad: 1,
+        verticalPad: 1
+      }
+    },
+
+    program: {
+      offset: {
+        x: 175,
+        y: 425
+      },
+      tile: {
+        height: 24,
+        width: 24,
+        horizPad: 1,
+        verticalPad: 1
+      }
+    },
+
+    menu: {
+      eye: 15,
+      arcPad: 0,
+      arcWidth: 25,
+      arcShift: 2
+    }
+
+  })
+
   .controller('MainCtrl', [
-    '$scope', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
-    function ($scope, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
+    '$scope', '$interval', 'ViewConfigs', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
+    function ($scope, $interval, ViewConfigs, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
     
       $scope.range = _.range;
+      $scope.max = Math.max;
+      $scope.abs = Math.abs;
+      $scope.neg = function (x) { return x && x<0; };
 
-      function init() {
-        $scope.view = {
-          world: {
-            offset: {
-              x: 100,
-              y: 2.5
-            },
-            tile: {
-              height: 36,
-              width: 36,
-              horizPad: 1,
-              verticalPad: 1
-            }
-          },
-          program: {
-            offset: {
-              x: 175,
-              y: 325
-            },
-            tile: {
-              height: 24,
-              width: 24,
-              horizPad: 1,
-              verticalPad: 1
-            }
-          },
-          menu: {
-            eye: 15,
-            arcPad: 0,
-            arcWidth: 25,
-            arcShift: 2
-          }
-        };
-      }
+      $scope.puzzle = {
+        width: 9,
+        height: 9,
+        steps: [10, 10, 10, 10, 10]
+      };
+
+      $scope.fadeout = function (secs) {
+        var stopUpdate;
+        function updateOpacity() {
+          $scope.o -= 0.05;
+          if ($scope.o < 0.01) { $scope.o = 0; }
+        }
+        stopUpdate = $interval(updateOpacity, 25.0*secs, 20);
+      };
+
+      $scope.view = ViewConfigs;
+      $scope.setPuzzle = false;
 
       function initWorld() {
-        var builder = new WorldEditor(9, 7)
-          .ship(4, 3)
-          .tile(5, 3)
-          .tile(4, 2)
-          .star(5, 2)
+        var builder = new WorldEditor($scope.puzzle.width, $scope.puzzle.height)
+          .ship($scope.puzzle.width/2, $scope.puzzle.height/2)
           .heading(Heading.UP);
 
         $scope.worldBuilder = builder;
         $scope.world = builder.build();
+        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * $scope.puzzle.width) / 2;
+        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzle.height;
       }
 
       function initProgram() {
-        var builder = new ProgramEditor(5)
-          .op(0, 0, Op.FWD)
-          .op(0, 1, Op.R90)
-          .op(0, 2, Op.F1);
-
+        var builder = new ProgramEditor()
+          .fns($scope.puzzle.steps.length);
+        for (var i=0; i<$scope.puzzle.steps.length; i++) {
+          builder.steps(i, $scope.puzzle.steps[i]);
+        }
         $scope.programBuilder = builder;
         $scope.program = builder.build();
+        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * Math.max.apply(null, $scope.puzzle.steps)) / 2;
       }
 
       function initWorldHelpers() {
@@ -132,6 +161,31 @@ angular.module('robozzleApp')
           var step = $scope.program.at(r, c);
           return StyleMap.icons.ops[step.op][0];
         };
+
+      }
+
+      function initWatchers() {
+        
+        $scope.$watch(
+          'puzzle.width',
+          function __changeWorld() {
+            initWorld();
+            initWorldHelpers();
+          });
+
+        $scope.$watch(
+          'puzzle.height',
+          function __changeWorld() {
+            initWorld();
+            initWorldHelpers();
+          });
+
+        $scope.$watch(
+          'puzzle.steps',
+          function __changeProgram() {
+            initProgram();
+            initProgramHelpers();
+          }, true);
 
       }
 
@@ -269,12 +323,7 @@ angular.module('robozzleApp')
 
       }
 
-      init();
-      initWorld();
-      initWorldHelpers();
-      initProgram();
-      initProgramHelpers();
-      initStepper();
+      initWatchers();
       initContextMenus();
 
     }
