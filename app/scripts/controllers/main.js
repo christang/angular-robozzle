@@ -303,10 +303,9 @@ angular.module('robozzleApp')
                         [opStyle.join(''),opIcons[Op.L90][0],setProgram('op',Op.L90)],
                         [opStyle.join(''),opIcons[Op.R90][0],setProgram('op',Op.R90)]
                        ],
-              config = {
-                down: [[],cellColor,cellFn,cellOp,[],[],[],[],[],[]],
-                up: [[],[],[],[],[],[],cellOp,cellFn.reverse(),cellColor,[]]
-              };
+              config = {down: [[],cellColor,cellFn,cellOp,[],[],[],[],[],[]],
+                        up: [[],[],[],[],[],[],cellOp,cellFn.reverse(),cellColor,[]]
+                       };
 
           return config;
         }
