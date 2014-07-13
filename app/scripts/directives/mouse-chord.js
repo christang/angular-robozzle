@@ -28,7 +28,7 @@ angular.module('mouseUI', [])
           };
         }
 
-        function reset() {
+        function reset(event) {
           var local = {
             '$dx': event.clientX - origin.x,
             '$dy': event.clientY - origin.y
