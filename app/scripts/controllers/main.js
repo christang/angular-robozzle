@@ -303,7 +303,10 @@ angular.module('robozzleApp')
                         [opStyle.join(''),opIcons[Op.L90][0],setProgram('op',Op.L90)],
                         [opStyle.join(''),opIcons[Op.R90][0],setProgram('op',Op.R90)]
                        ],
-              config = [[],cellColor, cellFn, cellOp,[],[],[],[],[],[]];
+              config = {
+                down: [[],cellColor,cellFn,cellOp,[],[],[],[],[],[]],
+                up: [[],[],[],[],[],[],cellOp,cellFn.reverse(),cellColor,[]]
+              };
 
           return config;
         }
@@ -319,7 +322,7 @@ angular.module('robozzleApp')
         $scope.programCxtMenu = false;
         $scope.toggleProgramCxtMenu = toggleCxtMenu($scope, 'programCxtMenu',
                                                     $scope.view.program.offset,
-                                                    programCxtMenuConfig);
+                                                    programCxtMenuConfig.up);
 
       }
 
