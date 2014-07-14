@@ -60,10 +60,14 @@ angular.module('robozzleApp')
   }])
 
   .controller('MainCtrl', [
-    '$scope', '$interval', '$resource', 'ViewConfigs', 'Puzzle', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
-    function ($scope, $interval, $resource, ViewConfigs, Puzzle, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
-    
-      //var PuzzleResource = $resource('', {});
+    '$scope', '$interval', 'PuzzleResource', 'ViewConfigs', 'Puzzle', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
+    function ($scope, $interval, PuzzleResource, ViewConfigs, Puzzle, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
+
+      function runQuery() {
+        PuzzleResource.query({}, function (res) { $scope.puzzles = res; });
+      }    
+
+      runQuery();
 
       $scope.view = ViewConfigs;
       $scope.range = _.range;
@@ -78,6 +82,23 @@ angular.module('robozzleApp')
         steps: [10, 10, 10, 10, 10]
       };
 
+      $scope.load = function (id) {
+        PuzzleResource.get({id: id}, function (res) {
+          var we = WorldEditor.fromJson(res.we),
+              pe = ProgramEditor.fromJson(res.pe);
+          initWorldBuilder(we);
+          initProgramBuilder(pe);
+          rebuildState();
+        });
+      };
+
+      $scope.save = function () {
+        var json = $scope.puzzle.toJson();
+        PuzzleResource.save(json, function () {
+          runQuery();
+        });
+      };
+
       function rebuildState() {
 
         initPuzzle();
@@ -88,9 +109,11 @@ angular.module('robozzleApp')
 
       function initWorldBuilder(builder) {
 
-        builder = builder || new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
-          .ship($scope.puzzleConf.width/2, $scope.puzzleConf.height/2)
-          .heading(Heading.UP);
+        if (!builder) {
+          builder = new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
+            .ship($scope.puzzleConf.width/2, $scope.puzzleConf.height/2)
+            .heading(Heading.UP);
+        }
 
         $scope.worldBuilder = builder;
         $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.width) / 2;
@@ -100,10 +123,12 @@ angular.module('robozzleApp')
 
       function initProgramBuilder(builder) {
 
-        builder = builder || new ProgramEditor()
-          .fns($scope.puzzleConf.steps.length);
-        for (var i=0; i<$scope.puzzleConf.steps.length; i++) {
-          builder.steps(i, $scope.puzzleConf.steps[i]);
+        if (!builder) {
+          builder = new ProgramEditor()
+            .fns($scope.puzzleConf.steps.length);
+          for (var i=0; i<$scope.puzzleConf.steps.length; i++) {
+            builder.steps(i, $scope.puzzleConf.steps[i]);
+          }
         }
 
         $scope.programBuilder = builder;

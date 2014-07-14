@@ -148,9 +148,15 @@
       Edit
     </button>
     <button class="btn btn-default" ng-disabled="!valid"
-            ng-click="">
+            ng-click="save()">
       Save
     </button>
   </div>
 
+</div>
+
+<div class="jumbotron">
+  <div ng-repeat="puzzle in puzzles" class="row">
+    <a href="" ng-click="load(puzzle._id)">{{$index}}. {{puzzle}}</a>
+  </div>
 </div>

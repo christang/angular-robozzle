@@ -11,7 +11,7 @@ angular
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
+      .when('/robozzle', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
@@ -20,6 +20,6 @@ angular
         controller: 'DemoCtrl'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/robozzle'
       });
   });

@@ -8,7 +8,7 @@ angular.module('robozzleApp')
 
   .value('assert', function (assertion, message) {
     if (!assertion) {
-      throw message || 'Assertion failed';
+      throw message || afd + 'Assertion failed';
     }
   })
 
@@ -56,7 +56,8 @@ angular.module('robozzleApp')
   .value('Configs', {
 
     maxFuncs        : 5,
-    maxStepsPerFunc : 10
+    maxStepsPerFunc : 10,
+    robozzles       : 'http://localhost:3000/puzzle/:id'
 
   })
 
@@ -282,6 +283,9 @@ angular.module('robozzleApp')
       },
       toJson: function () {
         var obj = {
+          X: this.X,
+          Y: this.Y,
+          H: this.H,
           maxX: this.maxX,
           maxY: this.maxY,
           tiles: this.tiles,
@@ -738,6 +742,12 @@ angular.module('robozzleApp')
     };
 
     return Puzzle;
+
+  }])
+
+  .factory('PuzzleResource', ['$resource', 'Configs', function ($resource, Configs) {
+
+    return $resource(Configs.robozzles);
 
   }])
 
