@@ -122,17 +122,30 @@
   <br/>
 
   <div class="row">
+    <button class="btn btn-default" ng-disabled="stepper.done()" 
+            ng-hide="!world.stars"
+            ng-click="reset = true; stepper.step(1, onSafeStep, onBadStep, onComplete)">
+      Step
+    </button>
+    <button class="btn btn-default" ng-disabled="!valid" 
+            ng-hide="play || !world.stars"
+            ng-click="play = true; reset = true; stepper.step(1, onSafeStepPlayOn, onBadStep, onComplete)">
+      Play
+    </button>
+    <button class="btn btn-default" ng-disabled="!valid" 
+            ng-hide="!play || world.isComplete()"
+            ng-click="play = false">
+      Stop
+    </button>
+    <button class="btn btn-default" 
+            ng-show="reset"
+            ng-click="play = false; reset = false; resetStepper()">
+      Reset
+    </button>
+    ||
     <button class="btn btn-default" 
             ng-click="puzzleConf.edit = !puzzleConf.edit">
       Edit
-    </button>
-    <button class="btn btn-default" ng-disabled="!world.stars"
-            ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">
-      Step
-    </button>
-    <button class="btn btn-default" ng-disabled="!valid"
-            ng-click="">
-      Play
     </button>
     <button class="btn btn-default" ng-disabled="!valid"
             ng-click="">

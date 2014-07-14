@@ -67,7 +67,9 @@ angular.module('robozzleApp')
 
       $scope.view = ViewConfigs;
       $scope.range = _.range;
+      $scope.reset = false;
       $scope.valid = false;
+      $scope.play = false;
 
       $scope.puzzleConf = {
         edit: false,
@@ -115,8 +117,11 @@ angular.module('robozzleApp')
         $scope.world = $scope.puzzle.worldEditor.build();
         $scope.program = $scope.puzzle.programEditor.build();
         $scope.stepper = new Stepper($scope.world, $scope.program);
-        $scope.message = "";
         $scope.valid = $scope.puzzle.isValid();
+
+        $scope.currentFn = undefined;
+        $scope.currentPos = undefined;
+        $scope.message = undefined;
 
       }
 
@@ -198,7 +203,7 @@ angular.module('robozzleApp')
           'puzzleConf.width',
           function __changeWorld() {
             initWorldBuilder();
-            if ($scope.worldBuilder && $scope.programBuilder) { 
+            if ($scope.worldBuilder && $scope.programBuilder) {
               rebuildState();
             }
           });
@@ -207,7 +212,7 @@ angular.module('robozzleApp')
           'puzzleConf.height',
           function __changeWorld() {
             initWorldBuilder();
-            if ($scope.worldBuilder && $scope.programBuilder) { 
+            if ($scope.worldBuilder && $scope.programBuilder) {
               rebuildState();
             }
           });
@@ -221,19 +226,42 @@ angular.module('robozzleApp')
             }
           }, true);
 
-        function updateMessage(message) {
-          message = message || "";
+        function updateMessage(message, andDoThis) {
+          message = message || '';
           return function (fn, pos, status) {
             $scope.currentFn = fn;
             $scope.currentPos = pos;
             $scope.message = message;
             console.log(status, fn, pos);
+            if (andDoThis) {
+              andDoThis();
+            }
           };
         }
 
         $scope.onSafeStep = updateMessage();
-        $scope.onBadStep = updateMessage("Oops!");
-        $scope.onComplete = updateMessage("Well done!");
+        $scope.onBadStep = updateMessage('Oops!');
+        $scope.onComplete = updateMessage('Well done!');
+
+        function playOn(fn, pos, status) {
+          function resetPlay() {
+            $scope.play = false;
+          }
+          $scope.currentFn = fn;
+          $scope.currentPos = pos;
+          $interval(function () {
+            if ($scope.play) {
+              $scope.stepper.step(
+                1, playOn,
+                updateMessage('Oops!', resetPlay),
+                updateMessage('Well done!', resetPlay));
+            }
+          }, 500, 1);
+          console.log(status, fn, pos);
+        }
+
+        $scope.onSafeStepPlayOn = playOn;
+        $scope.resetStepper = rebuildState;
 
       }
 

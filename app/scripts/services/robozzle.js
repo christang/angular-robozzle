@@ -695,6 +695,11 @@ angular.module('robozzleApp')
 
         return true;
       };
+
+      this.done = function () {
+        return !stack.any();
+      };
+
     }
 
     return Stepper;
