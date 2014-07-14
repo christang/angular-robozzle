@@ -111,11 +111,11 @@ angular.module('robozzleApp')
 
       function initPuzzle() {
 
-        console.log('>');
         $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder);
         $scope.world = $scope.puzzle.worldEditor.build();
         $scope.program = $scope.puzzle.programEditor.build();
         $scope.stepper = new Stepper($scope.world, $scope.program);
+        $scope.message = "";
         $scope.valid = $scope.puzzle.isValid();
 
       }
@@ -221,15 +221,19 @@ angular.module('robozzleApp')
             }
           }, true);
 
-        function callback(fn, pos, status) {
-          $scope.currentFn = fn;
-          $scope.currentPos = pos;
-          console.log(status, fn, pos);
+        function updateMessage(message) {
+          message = message || "";
+          return function (fn, pos, status) {
+            $scope.currentFn = fn;
+            $scope.currentPos = pos;
+            $scope.message = message;
+            console.log(status, fn, pos);
+          };
         }
 
-        $scope.onSafeStep =
-        $scope.onBadStep =
-        $scope.onComplete = callback;
+        $scope.onSafeStep = updateMessage();
+        $scope.onBadStep = updateMessage("Oops!");
+        $scope.onComplete = updateMessage("Well done!");
 
       }
 

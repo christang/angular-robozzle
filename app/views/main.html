@@ -94,6 +94,10 @@
 
   </canvas>
   
+  <div ng-show="message">
+    {{message}}
+  </div>
+
   <div ng-show="puzzleConf.edit">
     <div class="row">
       <div class="col-md-1" />
@@ -122,9 +126,17 @@
             ng-click="puzzleConf.edit = !puzzleConf.edit">
       Edit
     </button>
-    <button class="btn btn-default" 
+    <button class="btn btn-default" ng-disabled="!world.stars"
             ng-click="stepper.step(1, onSafeStep, onBadStep, onComplete)">
       Step
+    </button>
+    <button class="btn btn-default" ng-disabled="!valid"
+            ng-click="">
+      Play
+    </button>
+    <button class="btn btn-default" ng-disabled="!valid"
+            ng-click="">
+      Save
     </button>
   </div>
 
