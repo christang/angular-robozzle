@@ -500,7 +500,7 @@ angular.module('robozzleApp')
         }
         return this;
       },
-      build: function () {
+      build: function (blank) {
         var mem = this.mem;
         var program = new Program(_.map(mem, function (fn) {
           return fn.length;
@@ -509,8 +509,12 @@ angular.module('robozzleApp')
         _.each(mem, function (fn, r) {
           _.each(fn, function (step, c) {
             // make noop colorless
-            var color = step.op === Op.NOP ? Color.CLEAR : step.color;
-            program.setFuncStep(r + 1, c, step.op, color);
+            if (blank) {
+              program.setFuncStep(r + 1, c, Op.NOP, Color.CLEAR);
+            } else {
+              var color = step.op === Op.NOP ? Color.CLEAR : step.color;
+              program.setFuncStep(r + 1, c, step.op, color);
+            }
           });
         });
 
@@ -522,6 +526,9 @@ angular.module('robozzleApp')
         };
 
         return program;
+      },
+      blank: function () {
+        return this.build(true);
       },
       toJson: function () {
         var obj = {

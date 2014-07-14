@@ -163,5 +163,10 @@
 
 <hr/>
 <div class="row">
-  <a ng-repeat="puzzle in puzzles" href="" ng-click="load(puzzle._id)">{{puzzle.desc}}</a>
+  <span ng-repeat="puzzle in puzzles">
+    <span class="text-muted">|</span> 
+    <a href="" ng-click="load(puzzle._id, true)">{{puzzle.desc}}</a>
+    <a href="" ng-click="load(puzzle._id)">(solved)</a>
+  </span>
+  <span class="text-muted">|</span> 
 </div>

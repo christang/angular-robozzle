@@ -82,13 +82,13 @@ angular.module('robozzleApp')
         steps: [10, 10, 10, 10, 10]
       };
 
-      $scope.load = function (id) {
+      $scope.load = function (id, blank) {
         PuzzleResource.get({id: id}, function (res) {
           var we = WorldEditor.fromJson(res.we),
               pe = ProgramEditor.fromJson(res.pe);
           initWorldBuilder(we);
           initProgramBuilder(pe);
-          rebuildState(res.desc);
+          rebuildState(res.desc, blank);
         });
       };
 
@@ -99,9 +99,9 @@ angular.module('robozzleApp')
         });
       };
 
-      function rebuildState(title) {
+      function rebuildState(title, blank) {
 
-        initPuzzle(title);
+        initPuzzle(title, blank);
         initWorldHelpers();
         initProgramHelpers();
 
@@ -137,11 +137,15 @@ angular.module('robozzleApp')
 
       }
 
-      function initPuzzle(title) {
+      function initPuzzle(title, blank) {
 
         $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder, title);
         $scope.world = $scope.puzzle.worldEditor.build();
-        $scope.program = $scope.puzzle.programEditor.build();
+        if (blank) {
+          $scope.program = $scope.puzzle.programEditor.blank();
+        } else {
+          $scope.program = $scope.puzzle.programEditor.build();
+        }
         $scope.stepper = new Stepper($scope.world, $scope.program);
         $scope.valid = $scope.puzzle.isValid();
 
