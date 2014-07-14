@@ -500,7 +500,7 @@ angular.module('robozzleApp')
         }
         return this;
       },
-      build: function (blank) {
+      build: function () {
         var mem = this.mem;
         var program = new Program(_.map(mem, function (fn) {
           return fn.length;
@@ -509,12 +509,8 @@ angular.module('robozzleApp')
         _.each(mem, function (fn, r) {
           _.each(fn, function (step, c) {
             // make noop colorless
-            if (blank) {
-              program.setFuncStep(r + 1, c, Op.NOP, Color.CLEAR);
-            } else {
-              var color = step.op === Op.NOP ? Color.CLEAR : step.color;
-              program.setFuncStep(r + 1, c, step.op, color);
-            }
+            var color = step.op === Op.NOP ? Color.CLEAR : step.color;
+            program.setFuncStep(r + 1, c, step.op, color);
           });
         });
 
@@ -527,8 +523,14 @@ angular.module('robozzleApp')
 
         return program;
       },
-      blank: function () {
-        return this.build(true);
+      clear: function () {
+        var mem = this.mem;
+        _.each(mem, function (fn, r) {
+          _.each(fn, function (step, c) {
+            mem[r][c].op = Op.NOP;
+            mem[r][c].color = Color.CLEAR;
+          });
+        });
       },
       toJson: function () {
         var obj = {

@@ -139,13 +139,12 @@ angular.module('robozzleApp')
 
       function initPuzzle(title, blank) {
 
+        if (blank) {
+          $scope.programBuilder.clear();
+        }
         $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder, title);
         $scope.world = $scope.puzzle.worldEditor.build();
-        if (blank) {
-          $scope.program = $scope.puzzle.programEditor.blank();
-        } else {
-          $scope.program = $scope.puzzle.programEditor.build();
-        }
+        $scope.program = $scope.puzzle.programEditor.build();
         $scope.stepper = new Stepper($scope.world, $scope.program);
         $scope.valid = $scope.puzzle.isValid();
 
