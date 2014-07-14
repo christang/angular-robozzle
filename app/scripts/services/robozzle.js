@@ -701,4 +701,39 @@ angular.module('robozzleApp')
 
   }])
 
+  .factory('Puzzle', ['Stepper', 'WorldEditor', 'ProgramEditor', function __classFactory(Stepper, WorldEditor, ProgramEditor) {
+
+    function Puzzle(worldEditor, programEditor) {
+      this.worldEditor = worldEditor;
+      this.programEditor = programEditor;
+    }
+
+    Puzzle.prototype = {
+      isValid: function (maxN) {
+        var world = this.worldEditor.build(),
+            program = this.programEditor.build(),
+            stepper = new Stepper(world, program);
+        stepper.step(maxN || 2500);
+        return !_.isEmpty(this.worldEditor.stars) && world.isComplete();
+      },
+      toJson: function () {
+        var obj = {
+          we: this.worldEditor.toJson(),
+          pe: this.programEditor.toJson()
+        };
+        return JSON.stringify(obj);
+      }
+    };
+
+    Puzzle.fromJson = function (json) {
+      var obj = JSON.parse(json),
+          worldEditor = WorldEditor.fromJson(obj.we),
+          programEditor = ProgramEditor.fromJson(obj.pe);
+      return new Puzzle(worldEditor, programEditor);
+    };
+
+    return Puzzle;
+
+  }])
+
   ;

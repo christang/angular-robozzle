@@ -44,60 +44,87 @@ angular.module('robozzleApp')
 
   })
 
-  .controller('MainCtrl', [
-    '$scope', '$interval', 'ViewConfigs', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
-    function ($scope, $interval, ViewConfigs, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
-    
-      $scope.range = _.range;
-      $scope.max = Math.max;
-      $scope.abs = Math.abs;
-      $scope.neg = function (x) { return x && x<0; };
+  .controller('DemoCtrl', ['$scope', '$interval', function ($scope, $interval) {
 
-      $scope.puzzle = {
+    $scope.abs = Math.abs;
+    $scope.neg = function (x) { return x && x<0; };
+    $scope.fadeout = function (secs) {
+      var stopUpdate;
+      function updateOpacity() {
+        $scope.o -= 0.05;
+        if ($scope.o < 0.01) { $scope.o = 0; }
+      }
+      stopUpdate = $interval(updateOpacity, 25.0*secs, 20);
+    };
+
+  }])
+
+  .controller('MainCtrl', [
+    '$scope', '$interval', '$resource', 'ViewConfigs', 'Puzzle', 'Stepper', 'WorldEditor', 'ProgramEditor', 'StyleMap', 'Heading', 'Material', 'Color', 'Op',
+    function ($scope, $interval, $resource, ViewConfigs, Puzzle, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
+    
+      //var PuzzleResource = $resource('', {});
+
+      $scope.view = ViewConfigs;
+      $scope.range = _.range;
+      $scope.valid = false;
+
+      $scope.puzzleConf = {
+        edit: false,
         width: 9,
         height: 9,
         steps: [10, 10, 10, 10, 10]
       };
 
-      $scope.fadeout = function (secs) {
-        var stopUpdate;
-        function updateOpacity() {
-          $scope.o -= 0.05;
-          if ($scope.o < 0.01) { $scope.o = 0; }
-        }
-        stopUpdate = $interval(updateOpacity, 25.0*secs, 20);
-      };
+      function rebuildState() {
 
-      $scope.view = ViewConfigs;
-      $scope.setPuzzle = false;
+        initPuzzle();
+        initWorldHelpers();
+        initProgramHelpers();
 
-      function initWorld() {
-        var builder = new WorldEditor($scope.puzzle.width, $scope.puzzle.height)
-          .ship($scope.puzzle.width/2, $scope.puzzle.height/2)
+      }
+
+      function initWorldBuilder(builder) {
+
+        builder = builder || new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
+          .ship($scope.puzzleConf.width/2, $scope.puzzleConf.height/2)
           .heading(Heading.UP);
 
         $scope.worldBuilder = builder;
-        $scope.world = builder.build();
-        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * $scope.puzzle.width) / 2;
-        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzle.height;
+        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.width) / 2;
+        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.height;
+
       }
 
-      function initProgram() {
-        var builder = new ProgramEditor()
-          .fns($scope.puzzle.steps.length);
-        for (var i=0; i<$scope.puzzle.steps.length; i++) {
-          builder.steps(i, $scope.puzzle.steps[i]);
+      function initProgramBuilder(builder) {
+
+        builder = builder || new ProgramEditor()
+          .fns($scope.puzzleConf.steps.length);
+        for (var i=0; i<$scope.puzzleConf.steps.length; i++) {
+          builder.steps(i, $scope.puzzleConf.steps[i]);
         }
+
         $scope.programBuilder = builder;
-        $scope.program = builder.build();
-        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * Math.max.apply(null, $scope.puzzle.steps)) / 2;
+        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * Math.max.apply(null, $scope.puzzleConf.steps)) / 2;
+
+      }
+
+      function initPuzzle() {
+
+        console.log('>');
+        $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder);
+        $scope.world = $scope.puzzle.worldEditor.build();
+        $scope.program = $scope.puzzle.programEditor.build();
+        $scope.stepper = new Stepper($scope.world, $scope.program);
+        $scope.valid = $scope.puzzle.isValid();
+
       }
 
       function initWorldHelpers() {
 
         $scope.world.classAt = function (x, y) {
 
-          var tile = $scope.world.at(x, y),
+          var tile = this.at(x, y),
               classes = [];
 
           if (tile.isVoid) {
@@ -117,7 +144,7 @@ angular.module('robozzleApp')
 
         $scope.world.iconAt = function (x, y) {
 
-          var tile = $scope.world.at(x, y);
+          var tile = this.at(x, y);
 
           if (tile.isVoid) {
             return StyleMap.icons.board[Material.VOID].join('');
@@ -135,13 +162,14 @@ angular.module('robozzleApp')
       }
 
       function initProgramHelpers() {
+        
         $scope.program.isCurrent = function (r, c) {
           return (r + 1 === $scope.currentFn && c === $scope.currentPos);
         };
 
         $scope.program.classAt = function (r, c) {
 
-          var tile = $scope.program.at(r, c),
+          var tile = this.at(r, c),
               classes = [];
 
           if (tile.isNoOp()) {
@@ -150,7 +178,7 @@ angular.module('robozzleApp')
             classes = classes.concat(StyleMap.classes.colors[tile.color]);
           }
 
-          if ($scope.program.isCurrent(r, c)) {
+          if (this.isCurrent(r, c)) {
             classes = classes.concat(StyleMap.classes.steps.cursor);
           }
 
@@ -158,7 +186,7 @@ angular.module('robozzleApp')
         };
 
         $scope.program.iconAt = function (r, c) {
-          var step = $scope.program.at(r, c);
+          var step = this.at(r, c);
           return StyleMap.icons.ops[step.op][0];
         };
 
@@ -167,38 +195,37 @@ angular.module('robozzleApp')
       function initWatchers() {
         
         $scope.$watch(
-          'puzzle.width',
+          'puzzleConf.width',
           function __changeWorld() {
-            initWorld();
-            initWorldHelpers();
+            initWorldBuilder();
+            if ($scope.worldBuilder && $scope.programBuilder) { 
+              rebuildState();
+            }
           });
 
         $scope.$watch(
-          'puzzle.height',
+          'puzzleConf.height',
           function __changeWorld() {
-            initWorld();
-            initWorldHelpers();
+            initWorldBuilder();
+            if ($scope.worldBuilder && $scope.programBuilder) { 
+              rebuildState();
+            }
           });
 
         $scope.$watch(
-          'puzzle.steps',
+          'puzzleConf.steps',
           function __changeProgram() {
-            initProgram();
-            initProgramHelpers();
+            initProgramBuilder();
+            if ($scope.worldBuilder && $scope.programBuilder) {
+              rebuildState();
+            }
           }, true);
-
-      }
-
-      function initStepper() {
 
         function callback(fn, pos, status) {
           $scope.currentFn = fn;
           $scope.currentPos = pos;
           console.log(status, fn, pos);
         }
-
-        $scope.stepper = new Stepper($scope.world,
-                                     $scope.program);
 
         $scope.onSafeStep =
         $scope.onBadStep =
@@ -212,9 +239,7 @@ angular.module('robozzleApp')
           return function (c, r) {
             $scope.programCxtMenu = false;
             $scope.programBuilder[name](r, c, attr);
-            $scope.program = $scope.programBuilder.build();
-            initProgramHelpers();
-            initStepper();
+            rebuildState();
           };
         }
 
@@ -222,9 +247,7 @@ angular.module('robozzleApp')
           return function (x, y) {
             $scope.worldCxtMenu = false;
             $scope.worldBuilder[name](x, y, attr, attr2);
-            $scope.world = $scope.worldBuilder.build();
-            initWorldHelpers();
-            initStepper();
+            rebuildState();
           };
         }
 
