@@ -712,7 +712,8 @@ angular.module('robozzleApp')
 
   .factory('Puzzle', ['Stepper', 'WorldEditor', 'ProgramEditor', function __classFactory(Stepper, WorldEditor, ProgramEditor) {
 
-    function Puzzle(worldEditor, programEditor) {
+    function Puzzle(worldEditor, programEditor, desc) {
+      this.desc = desc || '';
       this.worldEditor = worldEditor;
       this.programEditor = programEditor;
     }
@@ -727,6 +728,7 @@ angular.module('robozzleApp')
       },
       toJson: function () {
         var obj = {
+          desc: this.desc,
           we: this.worldEditor.toJson(),
           pe: this.programEditor.toJson()
         };
@@ -738,7 +740,7 @@ angular.module('robozzleApp')
       var obj = JSON.parse(json),
           worldEditor = WorldEditor.fromJson(obj.we),
           programEditor = ProgramEditor.fromJson(obj.pe);
-      return new Puzzle(worldEditor, programEditor);
+      return new Puzzle(worldEditor, programEditor, obj.desc);
     };
 
     return Puzzle;

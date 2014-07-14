@@ -48,7 +48,7 @@ body {
   border-bottom: 1px solid #e5e5e5;
 }
 .jumbotron .btn {
-  font-size: 21px;
+  font-size: 18px;
   padding: 14px 24px;
 }
 
@@ -77,6 +77,11 @@ body {
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+.col-centered {
+  margin: 0 auto;
+  float: none;
 }
 
 text {
@@ -114,6 +119,10 @@ rect.tile-blue {
 
 rect.tile-green {
   fill: #66FF33;
+}
+
+path {
+  stroke: black;
 }
 
 path.tile-clear {

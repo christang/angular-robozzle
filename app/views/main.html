@@ -1,8 +1,12 @@
 <div add-shadows></div>
 
-<div class="jumbotron">
+<input type="text" class="form-control" 
+       style="text-align: center; font-size: 21px;" 
+       ng-model="puzzle.desc" placeholder="Untitled" />
 
-  <input type="text" ng-model="title">
+<br />
+
+<div class="jumbotron">
 
   <canvas ng-controller="MainCtrl">
 
@@ -149,7 +153,7 @@
             ng-click="puzzleConf.edit = !puzzleConf.edit">
       Edit
     </button>
-    <button class="btn btn-default" ng-disabled="!valid"
+    <button class="btn btn-default" ng-disabled="!valid || !puzzle.desc"
             ng-click="save()">
       Save
     </button>
@@ -157,8 +161,7 @@
 
 </div>
 
-<div class="jumbotron">
-  <div ng-repeat="puzzle in puzzles" class="row">
-    <a href="" ng-click="load(puzzle._id)">{{$index}}. {{puzzle}}</a>
-  </div>
+<hr/>
+<div class="row">
+  <a ng-repeat="puzzle in puzzles" href="" ng-click="load(puzzle._id)">{{puzzle.desc}}</a>
 </div>

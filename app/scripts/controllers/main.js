@@ -88,7 +88,7 @@ angular.module('robozzleApp')
               pe = ProgramEditor.fromJson(res.pe);
           initWorldBuilder(we);
           initProgramBuilder(pe);
-          rebuildState();
+          rebuildState(res.desc);
         });
       };
 
@@ -99,9 +99,9 @@ angular.module('robozzleApp')
         });
       };
 
-      function rebuildState() {
+      function rebuildState(title) {
 
-        initPuzzle();
+        initPuzzle(title);
         initWorldHelpers();
         initProgramHelpers();
 
@@ -137,9 +137,9 @@ angular.module('robozzleApp')
 
       }
 
-      function initPuzzle() {
+      function initPuzzle(title) {
 
-        $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder);
+        $scope.puzzle = new Puzzle($scope.worldBuilder, $scope.programBuilder, title);
         $scope.world = $scope.puzzle.worldEditor.build();
         $scope.program = $scope.puzzle.programEditor.build();
         $scope.stepper = new Stepper($scope.world, $scope.program);
@@ -287,7 +287,7 @@ angular.module('robozzleApp')
         }
 
         $scope.onSafeStepPlayOn = playOn;
-        $scope.resetStepper = rebuildState;
+        $scope.resetStepper = function () { rebuildState($scope.puzzle.desc); };
 
       }
 
