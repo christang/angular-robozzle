@@ -65,7 +65,7 @@ angular.module('robozzleApp')
 
       function runQuery() {
         PuzzleResource.query({}, function (res) { $scope.puzzles = res; });
-      }    
+      }
 
       runQuery();
 

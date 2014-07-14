@@ -8,7 +8,7 @@ angular.module('robozzleApp')
 
   .value('assert', function (assertion, message) {
     if (!assertion) {
-      throw message || afd + 'Assertion failed';
+      throw message || 'Assertion failed';
     }
   })
 
