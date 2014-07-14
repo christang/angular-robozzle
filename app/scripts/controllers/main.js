@@ -116,8 +116,8 @@ angular.module('robozzleApp')
         }
 
         $scope.worldBuilder = builder;
-        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.width) / 2;
-        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.height;
+        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * builder.maxX) / 2;
+        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * builder.maxY;
 
       }
 
@@ -132,6 +132,7 @@ angular.module('robozzleApp')
         }
 
         $scope.programBuilder = builder;
+        // todo(clt): fix Math.max.apply(null, $scope.puzzleConf.steps) expression
         $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * Math.max.apply(null, $scope.puzzleConf.steps)) / 2;
 
       }
