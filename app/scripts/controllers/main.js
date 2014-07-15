@@ -15,8 +15,8 @@ angular.module('robozzleApp')
         y: 2.5
       },
       tile: {
-        height: 36,
-        width: 36,
+        height: 30,
+        width: 30,
         horizPad: 1,
         verticalPad: 1
       }
