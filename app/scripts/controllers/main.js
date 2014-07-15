@@ -5,7 +5,7 @@ angular.module('robozzleApp')
   .value('ViewConfigs', {
 
     port: {
-      width: 600,
+      width: 680,
       height: 580
     },
 
@@ -132,8 +132,8 @@ angular.module('robozzleApp')
         }
 
         $scope.programBuilder = builder;
-        // todo(clt): fix Math.max.apply(null, $scope.puzzleConf.steps) expression
-        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * Math.max.apply(null, $scope.puzzleConf.steps)) / 2;
+        var programWidth = Math.max.apply(null, _.map(builder.mem, function (f) { return f.length; }));
+        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * programWidth) / 2;
 
       }
 

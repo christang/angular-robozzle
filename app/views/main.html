@@ -163,7 +163,7 @@
 
 <hr/>
 <div class="row">
-  <span ng-repeat="puzzle in puzzles">
+  <span ng-repeat="puzzle in puzzles | orderBy:'desc'">
     <span class="text-muted">|</span> 
     <a href="" ng-click="load(puzzle._id, true)">{{puzzle.desc}}</a>
     <a href="" ng-click="load(puzzle._id)">(solved)</a>
