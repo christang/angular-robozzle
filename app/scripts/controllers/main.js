@@ -111,7 +111,7 @@ angular.module('robozzleApp')
 
         if (!builder) {
           builder = new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
-            .ship($scope.puzzleConf.width/2, $scope.puzzleConf.height/2)
+            .ship(parseInt($scope.puzzleConf.width/2), parseInt($scope.puzzleConf.height/2))
             .heading(Heading.UP);
         }
 
