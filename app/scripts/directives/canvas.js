@@ -19,7 +19,7 @@ angular.module('robozzleApp')
 
   .directive('sframe', function () {
     return {
-      type: 'svg',
+      templateNamespace: 'svg',
       template: '<g ng-transclude />',
       restrict: 'E',
       replace: true,
@@ -29,7 +29,7 @@ angular.module('robozzleApp')
 
   .directive('grid', ['applyAndSet', function (applyAndSet) {
     return {
-      type: 'svg',
+      templateNamespace: 'svg',
       scope: true,
       template: '<g ng-transclude />',
       restrict: 'E',
@@ -54,7 +54,7 @@ angular.module('robozzleApp')
 
   .directive('tile', ['applyAndSet', function (applyAndSet) {
     return {
-      type: 'svg',
+      templateNamespace: 'svg',
       templateUrl: 'views/partials/tile.svg',
       restrict: 'E',
       replace: true,
@@ -94,7 +94,7 @@ angular.module('robozzleApp')
 
   .directive('polar', ['applyAndSet', function (applyAndSet) {
     return {
-      type: 'svg',
+      templateNamespace: 'svg',
       scope: true,
       template: '<g ng-transclude />',
       restrict: 'E',
@@ -126,7 +126,7 @@ angular.module('robozzleApp')
 
   .directive('arc', ['applyAndSet', function (applyAndSet) {
     return {
-      type: 'svg',
+      templateNamespace: 'svg',
       templateUrl: 'views/partials/arc.svg',
       restrict: 'E',
       replace: true,
