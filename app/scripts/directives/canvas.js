@@ -4,7 +4,7 @@ angular.module('robozzleApp')
 
   .directive('addShadows', function () {
     return {
-      templateUrl: 'views/filters/dropshadow.svg'
+      templateUrl: 'views/filters/dropshadow.html'
     };
   })
 
@@ -55,7 +55,7 @@ angular.module('robozzleApp')
   .directive('tile', ['applyAndSet', function (applyAndSet) {
     return {
       templateNamespace: 'svg',
-      templateUrl: 'views/partials/tile.svg',
+      templateUrl: 'views/partials/tile.html',
       restrict: 'E',
       replace: true,
       require: '^grid',
@@ -127,7 +127,7 @@ angular.module('robozzleApp')
   .directive('arc', ['applyAndSet', function (applyAndSet) {
     return {
       templateNamespace: 'svg',
-      templateUrl: 'views/partials/arc.svg',
+      templateUrl: 'views/partials/arc.html',
       restrict: 'E',
       replace: true,
       require: '^polar',
