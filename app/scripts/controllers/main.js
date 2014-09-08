@@ -118,6 +118,9 @@ angular.module('robozzleApp')
           builder = new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
             .ship(parseInt($scope.puzzleConf.width/2), parseInt($scope.puzzleConf.height/2))
             .heading(Heading.UP);
+        } else {
+          $scope.puzzleConf.width = builder.maxX;
+          $scope.puzzleConf.height = builder.maxY;
         }
 
         var vpad = 25,
