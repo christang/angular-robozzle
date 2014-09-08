@@ -127,31 +127,31 @@
     <button class="btn btn-default" ng-disabled="stepper.done()" 
             ng-hide="!world.stars"
             ng-click="reset = true; stepper.step(1, onSafeStep, onBadStep, onComplete)">
-      Step
+      <i class="fa fa-lg fa-gear"></i>
     </button>
     <button class="btn btn-default" ng-disabled="!valid" 
             ng-hide="play || !world.stars"
             ng-click="play = true; reset = true; stepper.step(1, onSafeStepPlayOn, onBadStep, onComplete)">
-      Play
+      <i class="fa fa-lg fa-gears"></i>
     </button>
     <button class="btn btn-default" ng-disabled="!valid" 
             ng-hide="!play || world.isComplete()"
             ng-click="play = false">
-      Stop
+      <i class="fa fa-lg fa-times"></i>
     </button>
     <button class="btn btn-default" 
             ng-show="reset"
             ng-click="play = false; reset = false; resetStepper()">
-      Reset
+      <i class="fa fa-lg fa-refresh"></i> 
     </button>
     ||
     <button class="btn btn-default" 
             ng-click="puzzleConf.edit = !puzzleConf.edit">
-      Edit
+      <i class="fa fa-lg fa-sliders"></i>
     </button>
     <button class="btn btn-default" ng-disabled="!valid || !puzzle.desc"
             ng-click="save()">
-      Save
+      <i class="fa fa-lg fa-upload"></i>
     </button>
   </div>
 
