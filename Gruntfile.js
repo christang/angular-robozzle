@@ -327,6 +327,11 @@ module.exports = function (grunt) {
           cwd: 'bower_components/jquery-ui/themes/ui-darkness',
           src: 'images/*',
           dest: '<%= yeoman.dist %>/styles'
+        }, {
+          expand: true,
+          cwd: 'bower_components/components-font-awesome',
+          src: 'fonts/*.*',
+          dest: '<%= yeoman.dist %>'
         }]
       },
       styles: {
