@@ -12,7 +12,7 @@ angular.module('robozzleApp')
     world: {
       offset: {
         x: 100,
-        y: 2.5
+        y: 0
       },
       tile: {
         height: 30,
@@ -109,19 +109,34 @@ angular.module('robozzleApp')
 
       function initWorldBuilder(builder) {
 
+        var vpad = 25,
+            hpad = 125,
+            gridWidth = ($scope.view.world.tile.width + $scope.view.world.tile.horizPad * 2) * $scope.puzzleConf.width,
+            gridHeight = ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.height,
+            progMax = Math.max.apply(null, $scope.puzzleConf.steps),
+            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax,
+            progHeight = ($scope.view.program.tile.height + $scope.view.program.tile.verticalPad * 2) * $scope.puzzleConf.steps.length;
+
         if (!builder) {
           builder = new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
             .ship(parseInt($scope.puzzleConf.width/2), parseInt($scope.puzzleConf.height/2))
             .heading(Heading.UP);
         }
 
+        $scope.view.port.width = gridWidth + hpad * 2;
+        $scope.view.port.height = gridHeight + progHeight + vpad * 2;
+
         $scope.worldBuilder = builder;
-        $scope.view.world.offset.x = ($scope.view.port.width - ($scope.view.world.tile.width + $scope.view.world.tile.verticalPad * 2) * builder.maxX) / 2;
-        $scope.view.program.offset.y = 25 + ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * builder.maxY;
+        $scope.view.world.offset.x = ($scope.view.port.width - gridWidth) / 2;
+        $scope.view.program.offset.x = ($scope.view.port.width - progWidth) / 2;
+        $scope.view.program.offset.y = gridHeight + vpad;
 
       }
 
       function initProgramBuilder(builder) {
+
+        var progMax = Math.max.apply(null, $scope.puzzleConf.steps),
+            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax;
 
         if (!builder) {
           builder = new ProgramEditor()
@@ -132,8 +147,7 @@ angular.module('robozzleApp')
         }
 
         $scope.programBuilder = builder;
-        var programWidth = Math.max.apply(null, _.map(builder.mem, function (f) { return f.length; }));
-        $scope.view.program.offset.x = ($scope.view.port.width - ($scope.view.program.tile.width + $scope.view.program.tile.verticalPad * 2) * programWidth) / 2;
+        $scope.view.program.offset.x = ($scope.view.port.width - progWidth) / 2;
 
       }
 
