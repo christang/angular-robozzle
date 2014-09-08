@@ -106,18 +106,18 @@
 
   <div ng-show="puzzleConf.edit">
     <div class="row">
-      <div class="col-md-1" />
+      <div class="col-md-1"></div>
       <div class="col-md-5">
         {{puzzleConf.width}} tiles wide
-        <div ui-slider min="3" max="17" step="2" ng-model="puzzleConf.width"/>
+        <div ui-slider min="3" max="17" step="2" ng-model="puzzleConf.width"></div>
       </div>
       <div class="col-md-5">
         {{puzzleConf.height}} tiles high
-        <div ui-slider min="3" max="13" step="2" ng-model="puzzleConf.height"/>
+        <div ui-slider min="3" max="13" step="2" ng-model="puzzleConf.height"></div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-1" />
+      <div class="col-md-1"></div>
       <div class="col-md-2" ng-repeat="i in range(5)"> 
         F{{i+1}}: {{puzzleConf.steps[i]}}
         <div ui-slider min="0" max="10" ng-model="puzzleConf.steps[i]"></div>
