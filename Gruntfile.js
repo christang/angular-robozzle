@@ -322,6 +322,11 @@ module.exports = function (grunt) {
           cwd: 'bower_components/bootstrap/dist',
           src: 'fonts/*',
           dest: '<%= yeoman.dist %>'
+        }, {
+          expand: true,
+          cwd: 'bower_components/jquery-ui/themes/ui-darkness',
+          src: 'images/*',
+          dest: '<%= yeoman.dist %>/styles'
         }]
       },
       styles: {
