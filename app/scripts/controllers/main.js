@@ -249,32 +249,19 @@ angular.module('robozzleApp')
 
       function initWatchers() {
         
-        $scope.$watch(
-          'puzzleConf.width',
-          function __changeWorld() {
-            initWorldBuilder();
-            if ($scope.worldBuilder && $scope.programBuilder) {
-              rebuildState();
-            }
-          });
+        $scope.updateWorld = function __changeWorld() {
+          initWorldBuilder();
+          if ($scope.worldBuilder && $scope.programBuilder) {
+            rebuildState();
+          }
+        };
 
-        $scope.$watch(
-          'puzzleConf.height',
-          function __changeWorld() {
-            initWorldBuilder();
-            if ($scope.worldBuilder && $scope.programBuilder) {
-              rebuildState();
-            }
-          });
-
-        $scope.$watch(
-          'puzzleConf.steps',
-          function __changeProgram() {
-            initProgramBuilder();
-            if ($scope.worldBuilder && $scope.programBuilder) {
-              rebuildState();
-            }
-          }, true);
+        $scope.updateProgram = function __changeProgram() {
+          initProgramBuilder();
+          if ($scope.worldBuilder && $scope.programBuilder) {
+            rebuildState();
+          }
+        };
 
         function updateMessage(message, andDoThis) {
           message = message || '';
@@ -432,6 +419,9 @@ angular.module('robozzleApp')
 
       initWatchers();
       initContextMenus();
+
+      $scope.updateWorld();
+      $scope.updateProgram();
 
     }
   ]);
