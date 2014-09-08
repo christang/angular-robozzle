@@ -68,7 +68,7 @@ angular.module('robozzleApp')
           $scope.puzzles = res;
 
           // Load a random puzzle
-          $scope.load(res[Math.floor(Math.random() * res.length)]._id); 
+          $scope.load(res[Math.floor(Math.random() * res.length)]._id, true); 
         });
       }
 
