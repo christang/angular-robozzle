@@ -64,7 +64,12 @@ angular.module('robozzleApp')
     function ($scope, $interval, PuzzleResource, ViewConfigs, Puzzle, Stepper, WorldEditor, ProgramEditor, StyleMap, Heading, Material, Color, Op) {
 
       function runQuery() {
-        PuzzleResource.query({}, function (res) { $scope.puzzles = res; });
+        PuzzleResource.query({}, function (res) { 
+          $scope.puzzles = res;
+
+          // Load a random puzzle
+          //$scope.load(res[Math.floor(Math.random() * res.length)]._id); 
+        });
       }
 
       runQuery();
@@ -109,19 +114,19 @@ angular.module('robozzleApp')
 
       function initWorldBuilder(builder) {
 
-        var vpad = 25,
-            hpad = 125,
-            gridWidth = ($scope.view.world.tile.width + $scope.view.world.tile.horizPad * 2) * $scope.puzzleConf.width,
-            gridHeight = ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * $scope.puzzleConf.height,
-            progMax = Math.max.apply(null, $scope.puzzleConf.steps),
-            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax,
-            progHeight = ($scope.view.program.tile.height + $scope.view.program.tile.verticalPad * 2) * $scope.puzzleConf.steps.length;
-
         if (!builder) {
           builder = new WorldEditor($scope.puzzleConf.width, $scope.puzzleConf.height)
             .ship(parseInt($scope.puzzleConf.width/2), parseInt($scope.puzzleConf.height/2))
             .heading(Heading.UP);
         }
+
+        var vpad = 25,
+            hpad = 125,
+            gridWidth = ($scope.view.world.tile.width + $scope.view.world.tile.horizPad * 2) * builder.maxX,
+            gridHeight = ($scope.view.world.tile.height + $scope.view.world.tile.verticalPad * 2) * builder.maxY,
+            progMax = Math.max.apply(null, $scope.puzzleConf.steps),
+            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax,
+            progHeight = ($scope.view.program.tile.height + $scope.view.program.tile.verticalPad * 2) * $scope.puzzleConf.steps.length;
 
         $scope.view.port.width = gridWidth + hpad * 2;
         $scope.view.port.height = gridHeight + progHeight + vpad * 2;
@@ -135,16 +140,18 @@ angular.module('robozzleApp')
 
       function initProgramBuilder(builder) {
 
-        var progMax = Math.max.apply(null, $scope.puzzleConf.steps),
-            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax;
-
         if (!builder) {
           builder = new ProgramEditor()
             .fns($scope.puzzleConf.steps.length);
           for (var i=0; i<$scope.puzzleConf.steps.length; i++) {
             builder.steps(i, $scope.puzzleConf.steps[i]);
           }
+        } else {
+          $scope.puzzleConf.steps = _.map(builder.mem, function (f) { return f.length; });
         }
+
+        var progMax = _.max($scope.puzzleConf.steps),
+            progWidth = ($scope.view.program.tile.width + $scope.view.program.tile.horizPad * 2) * progMax;
 
         $scope.programBuilder = builder;
         $scope.view.program.offset.x = ($scope.view.port.width - progWidth) / 2;
