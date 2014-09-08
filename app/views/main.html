@@ -10,9 +10,7 @@
 
   <canvas ng-controller="MainCtrl">
 
-    <sframe ng-attr-transform="translate(
-                                {{view.world.offset.x}}, 
-                                {{view.world.offset.y}})">
+    <sframe ng-attr-transform="translate({{view.world.offset.x}},{{view.world.offset.y}})">
   
       <desc>Frame containing the World</desc>
 
@@ -34,9 +32,7 @@
 
     </sframe>
 
-    <sframe ng-attr-transform="translate(
-                                {{view.program.offset.x}}, 
-                                {{view.program.offset.y}})">
+    <sframe ng-attr-transform="translate({{view.program.offset.x}},{{view.program.offset.y}})">
 
       <desc>Frame containing the Program</desc>
 
@@ -163,11 +159,13 @@
 
 <hr/>
 <div class="row">
-  <span ng-repeat="puzzle in puzzles | orderBy:'desc'">
-    <span class="text-muted">|</span> 
-    <a href="" ng-click="load(puzzle._id, true)">{{puzzle.desc}}</a>
-    <a href="" ng-click="load(puzzle._id)">(solved)</a>
-  </span>
-  <span ng-show="puzzles" class="text-muted">|</span> 
-  <p/>
+  <div class="col-md-12">
+    <span ng-repeat="puzzle in puzzles | orderBy:'desc'">
+      <span class="text-muted">|</span> 
+      <a href="" ng-click="load(puzzle._id, true)">{{puzzle.desc}}</a>
+      <a href="" ng-click="load(puzzle._id)">(solved)</a>
+    </span>
+    <span ng-show="puzzles" class="text-muted">|</span> 
+    <p></p>
+  </div>
 </div>
