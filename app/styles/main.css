@@ -85,7 +85,7 @@ body {
 }
 
 text {
-  fill:white;
+  fill:black;
   text-anchor: middle;
   dominant-baseline: central; 
   font-family: 'FontAwesome';
@@ -106,7 +106,7 @@ text:hover {
 }
 
 rect.tile-clear {
-  fill: #DDDDDD;
+  fill: #FFFFFF;
 }
 
 rect.tile-red {
@@ -126,7 +126,7 @@ path {
 }
 
 path.tile-clear {
-  fill: #DDDDDD;
+  fill: #FFFFFF;
 }
 
 path.tile-red {
@@ -141,9 +141,10 @@ path.tile-green {
   fill: #66FF33;
 }
 
-rect.tile-nop
+rect.tile-nop,
 rect.tile-void {
-  fill: #222222;
+  stroke: #DDDDDD;
+  fill: #EEEEEE;
 }
 
 rect.tile-cursor {
