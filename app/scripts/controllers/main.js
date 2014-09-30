@@ -311,7 +311,7 @@ angular.module('robozzleApp')
           return function (c, r) {
             $scope.programCxtMenu = false;
             $scope.programBuilder[name](r, c, attr);
-            rebuildState();
+            rebuildState($scope.puzzle.desc);
           };
         }
 
