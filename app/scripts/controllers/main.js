@@ -32,7 +32,8 @@ angular.module('robozzleApp')
         width: 24,
         horizPad: 1,
         verticalPad: 1
-      }
+      },
+      delay: 500
     },
 
     menu: {
@@ -296,7 +297,7 @@ angular.module('robozzleApp')
                 updateMessage('Oops!', resetPlay),
                 updateMessage('Well done!', resetPlay));
             }
-          }, 500, 1);
+          }, $scope.view.program.delay, 1);
           console.log(status, fn, pos);
         }
 
