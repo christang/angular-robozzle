@@ -38,6 +38,12 @@
 
       <grid ng-repeat="fn in range(program.functions.length)">
 
+        <text x="{{ 0 - 0.6 * view.program.tile.width }}" 
+              y="{{ (fn + 0.6) * (view.program.tile.height + view.program.tile.verticalPad) }}"
+              ng-if="program.functions[fn].length">
+          F{{fn+1}}
+        </text>
+
         <tile pos-y="{{fn}}"
               pos-x="{{pos}}"
               width="{{view.program.tile.width}}"
